@@ -1,32 +1,35 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 import RegisterSideBar from "./RegisterSideBar";
 
 const Register: React.FC = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = React.useState({});
+  // Using errors state but not setting it directly - it's used by the Form component
+  const [errors] = React.useState({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the registration logic
-    console.log("Registration data:", { username, email, password });
+    // Using console.log for development debugging
   };
 
   const getPasswordError = (value: string) => {
     if (value.length < 4) {
-      return "Password must be 4 characters or more";
+      return t("register.validation.passwordMin");
     }
     if ((value.match(/[A-Z]/g) || []).length < 1) {
-      return "Password needs at least 1 uppercase letter";
+      return t("register.validation.passwordUppercase");
     }
     if ((value.match(/[^a-z]/gi) || []).length < 1) {
-      return "Password needs at least 1 symbol";
+      return t("register.validation.passwordSymbol");
     }
 
     return null;
@@ -43,10 +46,10 @@ const Register: React.FC = () => {
         <div className="rounded-xl p-8 w-full max-w-md backdrop-blur-md bg-white/80 dark:bg-gray-800/80 border border-gray-400/50 dark:border-gray-700/50">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-              Create Your Account
+              {t("register.title")}
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Join Rekindle and begin your journey
+              {t("register.subtitle")}
             </p>
           </div>
 
@@ -61,13 +64,13 @@ const Register: React.FC = () => {
                 className="rounded-md"
                 errorMessage={({ validationDetails }) => {
                   if (validationDetails.valueMissing) {
-                    return "Please enter your username";
+                    return t("register.validation.usernameRequired");
                   }
                 }}
-                label="Username"
+                label={t("register.username")}
                 labelPlacement="outside"
                 name="username"
-                placeholder="Enter your username"
+                placeholder={t("register.placeholders.username")}
                 type="text"
                 value={username}
                 onValueChange={setUsername}
@@ -77,16 +80,16 @@ const Register: React.FC = () => {
                 className="rounded-md"
                 errorMessage={({ validationDetails }) => {
                   if (validationDetails.valueMissing) {
-                    return "Please enter your email";
+                    return t("register.validation.emailRequired");
                   }
                   if (validationDetails.typeMismatch) {
-                    return "Please enter a valid email address";
+                    return t("register.validation.emailInvalid");
                   }
                 }}
-                label="Email"
+                label={t("register.email")}
                 labelPlacement="outside"
                 name="email"
-                placeholder="Enter your email"
+                placeholder={t("register.placeholders.email")}
                 type="email"
                 value={email}
                 onValueChange={setEmail}
@@ -95,10 +98,10 @@ const Register: React.FC = () => {
                 isRequired
                 className="rounded-md"
                 errorMessage={getPasswordError(password)}
-                label="Password"
+                label={t("register.password")}
                 labelPlacement="outside"
                 name="password"
-                placeholder="Enter your password"
+                placeholder={t("register.placeholders.password")}
                 type="password"
                 value={password}
                 onValueChange={setPassword}
@@ -109,19 +112,19 @@ const Register: React.FC = () => {
                 color="primary"
                 type="submit"
               >
-                Create Account
+                {t("register.submitButton")}
               </Button>
             </div>
           </Form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Already have an account?{" "}
+              {t("register.alreadyHaveAccount")}{" "}
               <Link
                 className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
                 to="/login"
               >
-                Sign in here
+                {t("register.signInHere")}
               </Link>
             </p>
           </div>

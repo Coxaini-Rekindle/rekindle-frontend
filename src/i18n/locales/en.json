@@ -1,0 +1,85 @@
+{
+  "register": {
+    "title": "Create Your Account",
+    "subtitle": "Join Rekindle and begin your journey",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "submitButton": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInHere": "Sign in here",
+    "placeholders": {
+      "username": "Enter your username",
+      "email": "Enter your email",
+      "password": "Enter your password"
+    },
+    "validation": {
+      "usernameRequired": "Please enter your username",
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordMin": "Password must be 4 characters or more",
+      "passwordUppercase": "Password needs at least 1 uppercase letter",
+      "passwordSymbol": "Password needs at least 1 symbol"
+    },
+    "sidebar": {
+      "title": "Why Join Rekindle?",
+      "subtitle": "Your personal time capsule of shared experiences",
+      "footer": "Join thousands of others preserving their meaningful connections. Start your memory journey today.",
+      "features": {
+        "memoryCicles": {
+          "title": "Create Memory Circles",
+          "description": "Form intimate groups with the people who matter most. Share stories and experiences that only those who were there can truly appreciate."
+        },
+        "livingMemories": {
+          "title": "Build Living Memories",
+          "description": "Create rich, interactive memories that evolve over time. Group members can add comments, perspectives, and forgotten details."
+        },
+        "aiSearch": {
+          "title": "AI-Powered Search",
+          "description": "Our revolutionary search understands natural language and analyzes images, text, and comments to find exactly what you're looking for."
+        },
+        "privacy": {
+          "title": "Privacy-First Approach",
+          "description": "Your memories stay private within your circles. We don't mine your data or share it with third parties - your memories belong to you."
+        },
+        "timeline": {
+          "title": "Timeline Journeys",
+          "description": "Explore your shared history through interactive timelines, rediscovering moments and connections that shaped your relationships."
+        }
+      }
+    }
+  },
+  "login": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to your Rekindle account",
+    "email": "Email",
+    "password": "Password",
+    "submitButton": "Sign In",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUpHere": "Sign up here",
+    "placeholders": {
+      "email": "Enter your email",
+      "password": "Enter your password"
+    },
+    "validation": {
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Please enter your password"
+    }
+  },
+  "home": {
+    "welcome": "Welcome to Rekindle",
+    "subtitle": "Your place to connect and share memories.",
+    "features": {
+      "title": "Features",
+      "connect": "Connect with friends and family",
+      "share": "Share your stories and memories",
+      "stayUpdated": "Stay updated with your loved ones"
+    },
+    "actions": {
+      "login": "Login",
+      "register": "Register"
+    }
+  }
+}

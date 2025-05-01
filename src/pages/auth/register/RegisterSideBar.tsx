@@ -1,6 +1,7 @@
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { FaBook, FaSearch, FaUsers, FaLock, FaHistory } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 interface RegisterSideBarProps {
   className?: string;
@@ -9,36 +10,33 @@ interface RegisterSideBarProps {
 const RegisterSideBar: React.FC<RegisterSideBarProps> = ({
   className = "",
 }) => {
+  const { t } = useTranslation();
+
   const cardsData = [
     {
       icon: <FaUsers className="text-indigo-500" />,
-      title: "Create Memory Circles",
-      description:
-        "Form intimate groups with the people who matter most. Share stories and experiences that only those who were there can truly appreciate.",
+      title: t("register.sidebar.features.memoryCicles.title"),
+      description: t("register.sidebar.features.memoryCicles.description"),
     },
     {
       icon: <FaBook className="text-indigo-500" />,
-      title: "Build Living Memories",
-      description:
-        "Create rich, interactive memories that evolve over time. Group members can add comments, perspectives, and forgotten details.",
+      title: t("register.sidebar.features.livingMemories.title"),
+      description: t("register.sidebar.features.livingMemories.description"),
     },
     {
       icon: <FaSearch className="text-indigo-500" />,
-      title: "AI-Powered Search",
-      description:
-        "Our revolutionary search understands natural language and analyzes images, text, and comments to find exactly what you're looking for.",
+      title: t("register.sidebar.features.aiSearch.title"),
+      description: t("register.sidebar.features.aiSearch.description"),
     },
     {
       icon: <FaLock className="text-indigo-500" />,
-      title: "Privacy-First Approach",
-      description:
-        "Your memories stay private within your circles. We don't mine your data or share it with third parties - your memories belong to you.",
+      title: t("register.sidebar.features.privacy.title"),
+      description: t("register.sidebar.features.privacy.description"),
     },
     {
       icon: <FaHistory className="text-indigo-500" />,
-      title: "Timeline Journeys",
-      description:
-        "Explore your shared history through interactive timelines, rediscovering moments and connections that shaped your relationships.",
+      title: t("register.sidebar.features.timeline.title"),
+      description: t("register.sidebar.features.timeline.description"),
     },
   ];
 
@@ -46,10 +44,10 @@ const RegisterSideBar: React.FC<RegisterSideBarProps> = ({
     <div className={`p-6 overflow-y-auto ${className}`}>
       <div className="lg:sticky lg:top-6">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-          Why Join Rekindle?
+          {t("register.sidebar.title")}
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Your personal time capsule of shared experiences
+          {t("register.sidebar.subtitle")}
         </p>
 
         <div className="space-y-4">
@@ -71,9 +69,7 @@ const RegisterSideBar: React.FC<RegisterSideBarProps> = ({
             </Card>
           ))}
           <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-4">
-            Join thousands of others preserving their meaningful connections.
-            <br />
-            Start your memory journey today.
+            {t("register.sidebar.footer")}
           </p>
         </div>
       </div>

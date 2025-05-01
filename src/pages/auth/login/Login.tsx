@@ -3,28 +3,17 @@ import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = React.useState({});
+  // Using errors state but not setting it directly - it's used by the Form component
+  const [errors] = React.useState({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the login logic
-  };
-
-  const getPasswordError = (value: string) => {
-    if (value.length < 4) {
-      return "Password must be 4 characters or more";
-    }
-    if ((value.match(/[A-Z]/g) || []).length < 1) {
-      return "Password needs at least 1 uppercase letter";
-    }
-    if ((value.match(/[^a-z]/gi) || []).length < 1) {
-      return "Password needs at least 1 symbol";
-    }
-
-    return null;
   };
 
   return (
@@ -32,10 +21,10 @@ const Login: React.FC = () => {
       <div className="px-4 py-12 rounded-xl w-full max-w-md backdrop-blur-md bg-white/80 dark:bg-gray-800/80 border border-gray-400/50 dark:border-gray-700/50">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-            Welcome Back
+            {t("login.title")}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Sign in to continue your journey with Rekindle
+            {t("login.subtitle")}
           </p>
         </div>
 
@@ -50,26 +39,30 @@ const Login: React.FC = () => {
               className="rounded-md"
               errorMessage={({ validationDetails }) => {
                 if (validationDetails.valueMissing) {
-                  return "Please enter your email";
+                  return t("login.validation.emailRequired");
                 }
                 if (validationDetails.typeMismatch) {
-                  return "Please enter a valid email address";
+                  return t("login.validation.emailInvalid");
                 }
               }}
-              label="Email"
+              label={t("login.email")}
               labelPlacement="outside"
               name="email"
-              placeholder="Enter your email"
+              placeholder={t("login.placeholders.email")}
               type="email"
             />
             <Input
               isRequired
               className="rounded-md"
-              errorMessage={getPasswordError(password)}
-              label="Password"
+              errorMessage={({ validationDetails }) => {
+                if (validationDetails.valueMissing) {
+                  return t("login.validation.passwordRequired");
+                }
+              }}
+              label={t("login.password")}
               labelPlacement="outside"
               name="password"
-              placeholder="Enter your password"
+              placeholder={t("login.placeholders.password")}
               type="password"
               onValueChange={setPassword}
             />
@@ -78,7 +71,7 @@ const Login: React.FC = () => {
                 className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
                 to="/forgot-password"
               >
-                Forgot password?
+                {t("login.forgotPassword")}
               </Link>
             </div>
             <Button
@@ -86,19 +79,19 @@ const Login: React.FC = () => {
               color="primary"
               type="submit"
             >
-              Sign In
+              {t("login.submitButton")}
             </Button>
           </div>
         </Form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Don&apos;t have an account?{" "}
+            {t("login.noAccount")}{" "}
             <Link
               className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
               to="/register"
             >
-              Register here
+              {t("login.signUpHere")}
             </Link>
           </p>
         </div>
