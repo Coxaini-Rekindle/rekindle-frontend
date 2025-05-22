@@ -5,13 +5,15 @@
     "username": "Username",
     "email": "Email",
     "password": "Password",
+    "name": "Name",
     "submitButton": "Create Account",
     "alreadyHaveAccount": "Already have an account?",
     "signInHere": "Sign in here",
     "placeholders": {
       "username": "Enter your username",
       "email": "Enter your email",
-      "password": "Enter your password"
+      "password": "Enter your password",
+      "name" : "Enter your name"
     },
     "validation": {
       "usernameRequired": "Please enter your username",
@@ -19,7 +21,8 @@
       "emailInvalid": "Please enter a valid email address",
       "passwordMin": "Password must be 4 characters or more",
       "passwordUppercase": "Password needs at least 1 uppercase letter",
-      "passwordSymbol": "Password needs at least 1 symbol"
+      "passwordSymbol": "Password needs at least 1 symbol",
+      "nameRequired": "Please enter your name"
     },
     "sidebar": {
       "title": "Why Join Rekindle?",

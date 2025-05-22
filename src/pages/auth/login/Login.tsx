@@ -2,18 +2,28 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
+import { useLogin } from "../../../hooks/useAuth";
+import { useAuthStatus } from "../../../hooks/useAuthStatus";
 
 const Login: React.FC = () => {
   const { t } = useTranslation();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // Using errors state but not setting it directly - it's used by the Form component
+  const login = useLogin();
+  const { isAuthenticated } = useAuthStatus();
   const [errors] = React.useState({});
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    return <Navigate replace to="/" />;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the login logic
+    login.mutate({ email, password });
   };
 
   return (
@@ -50,6 +60,8 @@ const Login: React.FC = () => {
               name="email"
               placeholder={t("login.placeholders.email")}
               type="email"
+              value={email}
+              onValueChange={setEmail}
             />
             <Input
               isRequired

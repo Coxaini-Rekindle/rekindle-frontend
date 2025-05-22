@@ -1,24 +1,35 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
+
+import { useRegister } from "../../../hooks/useAuth";
+import { useAuthStatus } from "../../../hooks/useAuthStatus";
 
 import RegisterSideBar from "./RegisterSideBar";
 
 const Register: React.FC = () => {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // Using errors state but not setting it directly - it's used by the Form component
   const [errors] = React.useState({});
 
+  const register = useRegister();
+  const { isAuthenticated } = useAuthStatus();
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    return <Navigate replace to="/" />;
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the registration logic
-    // Using console.log for development debugging
+    register.mutate({ username, name, email, password });
   };
 
   const getPasswordError = (value: string) => {
@@ -74,6 +85,22 @@ const Register: React.FC = () => {
                 type="text"
                 value={username}
                 onValueChange={setUsername}
+              />
+              <Input
+                isRequired
+                className="rounded-md"
+                errorMessage={({ validationDetails }) => {
+                  if (validationDetails.valueMissing) {
+                    return t("register.validation.nameRequired");
+                  }
+                }}
+                label={t("register.name")}
+                labelPlacement="outside"
+                name="name"
+                placeholder={t("register.placeholders.name")}
+                type="text"
+                value={name}
+                onValueChange={setName}
               />
               <Input
                 isRequired

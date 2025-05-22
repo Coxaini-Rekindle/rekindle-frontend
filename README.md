@@ -35,6 +35,19 @@ npm install
 npm run dev
 ```
 
+### Environment Configuration
+
+The application uses environment variables for API configurations. The following files are available:
+
+- `.env` - Default environment variables
+- `.env.development` - Development-specific variables (used with `npm run dev`)
+- `.env.production` - Production-specific variables (used with `npm run build`)
+
+API URL Configuration:
+```
+VITE_API_URL=http://localhost:5049
+```
+
 ### Setup pnpm (optional)
 
 If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
