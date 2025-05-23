@@ -4,6 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
+import { MdPerson, MdBadge, MdEmail, MdLock } from "react-icons/md";
 
 import { useRegister } from "../../../hooks/useAuth";
 import { useAuthStatus } from "../../../hooks/useAuthStatus";
@@ -73,6 +74,9 @@ const Register: React.FC = () => {
               <Input
                 isRequired
                 className="rounded-md"
+                endContent={
+                  <MdPerson className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
                 errorMessage={({ validationDetails }) => {
                   if (validationDetails.valueMissing) {
                     return t("register.validation.usernameRequired");
@@ -89,6 +93,9 @@ const Register: React.FC = () => {
               <Input
                 isRequired
                 className="rounded-md"
+                endContent={
+                  <MdBadge className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
                 errorMessage={({ validationDetails }) => {
                   if (validationDetails.valueMissing) {
                     return t("register.validation.nameRequired");
@@ -105,6 +112,9 @@ const Register: React.FC = () => {
               <Input
                 isRequired
                 className="rounded-md"
+                endContent={
+                  <MdEmail className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
                 errorMessage={({ validationDetails }) => {
                   if (validationDetails.valueMissing) {
                     return t("register.validation.emailRequired");
@@ -124,6 +134,9 @@ const Register: React.FC = () => {
               <Input
                 isRequired
                 className="rounded-md"
+                endContent={
+                  <MdLock className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
                 errorMessage={getPasswordError(password)}
                 label={t("register.password")}
                 labelPlacement="outside"

@@ -4,6 +4,7 @@ import { Form } from "@heroui/form";
 import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { MdEmail, MdLock } from "react-icons/md";
 
 import { useLogin } from "../../../hooks/useAuth";
 import { useAuthStatus } from "../../../hooks/useAuthStatus";
@@ -47,6 +48,9 @@ const Login: React.FC = () => {
             <Input
               isRequired
               className="rounded-md"
+              endContent={
+                <MdEmail className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
               errorMessage={({ validationDetails }) => {
                 if (validationDetails.valueMissing) {
                   return t("login.validation.emailRequired");
@@ -66,6 +70,9 @@ const Login: React.FC = () => {
             <Input
               isRequired
               className="rounded-md"
+              endContent={
+                <MdLock className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
               errorMessage={({ validationDetails }) => {
                 if (validationDetails.valueMissing) {
                   return t("login.validation.passwordRequired");
