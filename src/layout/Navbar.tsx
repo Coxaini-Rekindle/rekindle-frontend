@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Navbar as HeroNavbar,
@@ -33,20 +34,25 @@ import {
 
 import { useLogout } from "@/hooks/useAuth";
 import { useUserGroups } from "@/hooks/useGroups";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const Navbar: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const logout = useLogout();
   const { data: groups = [] } = useUserGroups();
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { profile, getAvatarUrl } = useUserProfile();
 
-  // Mock user data - replace with actual user data from context/hook
+  // Use profile data or fallback to default values
   const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "https://i.pravatar.cc/150?u=john.doe@example.com",
+    name: profile?.name || "User",
+    email: profile?.email || "",
+    avatar: profile?.avatarFileId
+      ? getAvatarUrl(profile.avatarFileId)
+      : undefined,
   };
 
   const handleLogout = () => {
@@ -64,8 +70,8 @@ const Navbar: React.FC = () => {
   const recentGroups = groups.slice(0, 5); // Show only first 5 groups
 
   const menuItems = [
-    { label: "Home", path: "/", icon: MdHome },
-    { label: "Groups", path: "/groups", icon: MdGroup },
+    { label: t("navbar.home"), path: "/", icon: MdHome },
+    { label: t("navbar.groups"), path: "/groups", icon: MdGroup },
   ];
 
   return (
@@ -79,7 +85,9 @@ const Navbar: React.FC = () => {
         {/* Brand */}
         <NavbarContent>
           <NavbarMenuToggle
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={
+              isMenuOpen ? t("navbar.closeMenu") : t("navbar.openMenu")
+            }
             className="sm:hidden"
           />
           <NavbarBrand>
@@ -126,8 +134,8 @@ const Navbar: React.FC = () => {
                     Quick Groups
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu aria-label="Group shortcuts">
-                  <DropdownSection showDivider title="Recent Groups">
+                <DropdownMenu aria-label={t("navbar.groupShortcuts")}>
+                  <DropdownSection showDivider title={t("navbar.recentGroups")}>
                     {recentGroups.map((group) => (
                       <DropdownItem
                         key={group.id}
@@ -137,8 +145,8 @@ const Navbar: React.FC = () => {
                         <div className="flex flex-col">
                           <span className="font-medium">{group.name}</span>
                           <span className="text-xs text-foreground-500">
-                            {group.memberCount} member
-                            {group.memberCount !== 1 ? "s" : ""}
+                            {group.memberCount}
+                            {t("navbar.member", { count: group.memberCount })}
                           </span>
                         </div>
                       </DropdownItem>
@@ -150,14 +158,14 @@ const Navbar: React.FC = () => {
                       startContent={<MdAdd size={16} />}
                       onPress={() => navigate("/groups")}
                     >
-                      Create New Group
+                      {t("navbar.createNewGroup")}
                     </DropdownItem>
                     <DropdownItem
                       key="view-all-groups"
                       startContent={<MdGroup size={16} />}
                       onPress={() => navigate("/groups")}
                     >
-                      View All Groups
+                      {t("navbar.viewAllGroups")}
                     </DropdownItem>
                   </DropdownSection>
                 </DropdownMenu>
@@ -195,39 +203,66 @@ const Navbar: React.FC = () => {
                 src={user.avatar}
               />
             </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem
-                key="profile"
-                className="h-14 gap-2"
-                textValue="Profile"
-              >
-                <div className="flex flex-col">
-                  <p className="font-semibold">{user.name}</p>
-                  <p className="text-sm text-foreground-500">{user.email}</p>
-                </div>
-              </DropdownItem>
-              <DropdownItem
-                key="profile-page"
-                startContent={<MdPerson size={16} />}
-                onPress={() => navigate("/profile")}
-              >
-                Profile
-              </DropdownItem>
-              <DropdownItem
-                key="settings"
-                startContent={<MdSettings size={16} />}
-                onPress={() => navigate("/settings")}
-              >
-                Settings
-              </DropdownItem>
-              <DropdownItem
-                key="logout"
-                color="danger"
-                startContent={<MdLogout size={16} />}
-                onPress={handleLogout}
-              >
-                Log Out
-              </DropdownItem>
+            <DropdownMenu aria-label={t("navbar.userActions")}>
+              <DropdownSection showDivider title={t("navbar.myAccount")}>
+                <DropdownItem
+                  key="profile"
+                  description={user.email}
+                  startContent={<MdPerson size={16} />}
+                  textValue={t("navbar.profile")}
+                  onPress={() => navigate("/profile")}
+                >
+                  {user.name}
+                </DropdownItem>
+              </DropdownSection>
+
+              <DropdownSection showDivider title={t("navbar.settings")}>
+                <DropdownItem
+                  key="theme"
+                  isReadOnly
+                  endContent={
+                    <button type="button" onClick={toggleTheme}>
+                      {theme === "dark" ? (
+                        <MdLightMode size={22} />
+                      ) : (
+                        <MdDarkMode size={22} />
+                      )}
+                    </button>
+                  }
+                  startContent={
+                    theme === "dark" ? (
+                      <MdDarkMode size={16} />
+                    ) : (
+                      <MdLightMode size={16} />
+                    )
+                  }
+                  textValue={t("navbar.theme")}
+                >
+                  {t("navbar.theme")}
+                </DropdownItem>
+                <DropdownItem
+                  key="system-settings"
+                  startContent={<MdSettings size={16} />}
+                  textValue={t("navbar.systemSettings")}
+                  onPress={() => navigate("/settings")}
+                >
+                  {t("navbar.systemSettings")}
+                </DropdownItem>
+              </DropdownSection>
+
+              <DropdownSection title={t("navbar.dangerZone")}>
+                <DropdownItem
+                  key="logout"
+                  className="text-danger"
+                  color="danger"
+                  description={t("navbar.logoutDescription")}
+                  startContent={<MdLogout size={16} />}
+                  textValue={t("navbar.logout")}
+                  onPress={handleLogout}
+                >
+                  {t("navbar.logout")}
+                </DropdownItem>
+              </DropdownSection>
             </DropdownMenu>
           </Dropdown>
         </NavbarContent>

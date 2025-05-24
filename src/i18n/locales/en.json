@@ -220,5 +220,44 @@
         }
       }
     }
+  },
+  "profile": {
+    "title": "My Profile",
+    "profileInfo": "Profile Information",
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "changeAvatar": "Change Avatar",
+    "enterName": "Enter your name",
+    "nameRequired": "Name is required",
+    "nameUpdateSuccess": "Name updated successfully",
+    "avatarUpdateSuccess": "Avatar updated successfully",
+    "invalidImageType": "Please upload a valid image file (e.g., PNG, JPG)",
+    "imageTooLarge": "Image size should be less than 2MB"
+  },
+  "common": {
+    "error": "Error",
+    "success": "Success"
+  },
+  "navbar": {
+    "home": "Home",
+    "groups": "Groups",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "groupShortcuts": "Group shortcuts",
+    "recentGroups": "Recent Groups",
+    "member": " member",
+    "member_plural": " members",
+    "createNewGroup": "Create New Group",
+    "viewAllGroups": "View All Groups",
+    "userActions": "User actions",
+    "myAccount": "My Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "theme": "Theme",
+    "systemSettings": "System Settings",
+    "dangerZone": "Danger Zone",
+    "logout": "Logout",
+    "logoutDescription": "Log out of your account"
   }
 }

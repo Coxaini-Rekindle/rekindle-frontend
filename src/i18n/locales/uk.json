@@ -213,5 +213,45 @@
         }
       }
     }
+  },
+  "profile": {
+    "title": "Мій профіль",
+    "profileInfo": "Інформація профілю",
+    "name": "Ім'я",
+    "username": "Ім'я користувача",
+    "email": "Електронна пошта",
+    "changeAvatar": "Змінити аватар",
+    "enterName": "Введіть своє ім'я",
+    "nameRequired": "Ім'я обов'язкове",
+    "nameUpdateSuccess": "Ім'я успішно оновлено",
+    "avatarUpdateSuccess": "Аватар успішно оновлено",
+    "invalidImageType": "Будь ласка, завантажте дійсний файл зображення (наприклад, PNG, JPG)",
+    "imageTooLarge": "Розмір зображення не повинен перевищувати 2 МБ"
+  },
+  "common": {
+    "error": "Помилка",
+    "success": "Успіх"
+  },
+  "navbar": {
+    "home": "Головна",
+    "groups": "Групи",
+    "closeMenu": "Закрити меню",
+    "openMenu": "Відкрити меню",
+    "groupShortcuts": "Швидкий доступ до груп",
+    "recentGroups": "Останні групи",
+    "member": " учасник",
+    "member_plural": " учасників",
+    "member_few": " учасники",
+    "createNewGroup": "Створити нову групу",
+    "viewAllGroups": "Переглянути всі групи",
+    "userActions": "Дії користувача",
+    "myAccount": "Мій обліковий запис",
+    "profile": "Профіль",
+    "settings": "Налаштування",
+    "theme": "Тема",
+    "systemSettings": "Системні налаштування",
+    "dangerZone": "Небезпечна зона",
+    "logout": "Вийти",
+    "logoutDescription": "Вийти з вашого облікового запису"
   }
 }
