@@ -152,8 +152,7 @@
       "emailInvalid": "Будь ласка, введіть дійсну електронну адресу",
       "passwordRequired": "Будь ласка, введіть пароль"
     }
-  },
-  "home": {
+  },  "home": {
     "welcome": "Ласкаво просимо до Rekindle",
     "subtitle": "Ваше місце для спілкування та обміну спогадами.",
     "features": {
@@ -165,6 +164,54 @@
     "actions": {
       "login": "Увійти",
       "register": "Зареєструватися"
+    }
+  },
+  "notifications": {
+    "title": "Сповіщення",
+    "unread": "непрочитано",
+    "allCaughtUp": "Ви все прочитали!",
+    "noNotifications": "Сповіщень немає",
+    "noUnreadNotifications": "Непрочитаних сповіщень немає",
+    "noGroupNotifications": "Сповіщень груп немає",
+    "noMemoryNotifications": "Сповіщень про спогади немає",
+    "noPendingInvitations": "Запрошень немає",
+    "markAllRead": "Позначити все як прочитане",
+    "clearAll": "Очистити все",
+    "viewAll": "Переглянути всі сповіщення",
+    "addDemo": "Додати демо-сповіщення",
+    "center": {
+      "title": "Центр сповіщень",
+      "tabs": {
+        "all": "Всі",
+        "unread": "Непрочитані",
+        "groups": "Групи",
+        "memories": "Спогади",
+        "invitations": "Запрошення",
+        "settings": "Налаштування"
+      },
+      "preferences": {
+        "title": "Налаштування сповіщень",
+        "email": {
+          "title": "Сповіщення електронною поштою",
+          "description": "Отримувати сповіщення через електронну пошту"
+        },
+        "push": {
+          "title": "Push-сповіщення",
+          "description": "Отримувати push-сповіщення"
+        },
+        "groupUpdates": {
+          "title": "Оновлення груп",
+          "description": "Сповіщення про зміни в групах"
+        },
+        "memoryShares": {
+          "title": "Поширення спогадів",
+          "description": "Коли хтось ділиться спогадом"
+        },
+        "groupInvitations": {
+          "title": "Запрошення до груп",
+          "description": "Коли ви отримуєте запрошення до груп"
+        }
+      }
     }
   }
 }

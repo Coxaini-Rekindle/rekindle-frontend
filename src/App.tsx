@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import AppLayout from "./layout/AppLayout";
 import Home from "./pages/Home";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
@@ -11,11 +12,13 @@ import "./i18n/i18n";
 function App() {
   return (
     <Routes>
-      {/* Protected routes */}
+      {/* Protected routes with navbar */}
       <Route
         element={
           <ProtectedRoute>
-            <Home />
+            <AppLayout>
+              <Home />
+            </AppLayout>
           </ProtectedRoute>
         }
         path="/"
@@ -23,7 +26,9 @@ function App() {
       <Route
         element={
           <ProtectedRoute>
-            <Groups />
+            <AppLayout>
+              <Groups />
+            </AppLayout>
           </ProtectedRoute>
         }
         path="/groups"

@@ -172,5 +172,53 @@
       "login": "Login",
       "register": "Register"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "unread",
+    "allCaughtUp": "All caught up!",
+    "noNotifications": "No notifications yet",
+    "noUnreadNotifications": "No unread notifications",
+    "noGroupNotifications": "No group notifications",
+    "noMemoryNotifications": "No memory notifications",
+    "noPendingInvitations": "No pending invitations",
+    "markAllRead": "Mark all read",
+    "clearAll": "Clear all",
+    "viewAll": "View All Notifications",
+    "addDemo": "Add Demo Notification",
+    "center": {
+      "title": "Notification Center",
+      "tabs": {
+        "all": "All",
+        "unread": "Unread",
+        "groups": "Groups",
+        "memories": "Memories",
+        "invitations": "Invitations",
+        "settings": "Settings"
+      },
+      "preferences": {
+        "title": "Notification Preferences",
+        "email": {
+          "title": "Email Notifications",
+          "description": "Receive notifications via email"
+        },
+        "push": {
+          "title": "Push Notifications",
+          "description": "Receive push notifications"
+        },
+        "groupUpdates": {
+          "title": "Group Updates",
+          "description": "Notifications about group changes"
+        },
+        "memoryShares": {
+          "title": "Memory Shares",
+          "description": "When someone shares a memory"
+        },
+        "groupInvitations": {
+          "title": "Group Invitations",
+          "description": "When you receive group invitations"
+        }
+      }
+    }
   }
 }
