@@ -281,3 +281,42 @@ export const useRemoveUserFromGroup = () => {
     },
   });
 };
+
+// Get group info by invite ID
+export const useGroupByInviteId = (inviteId: string, enabled = true) => {
+  return useQuery({
+    queryKey: ["group-by-invite", inviteId],
+    queryFn: () => groupInvitationsApi.getGroupByInviteId(inviteId),
+    enabled: enabled && !!inviteId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Get group info by join token
+export const useGroupByJoinToken = (token: string, enabled = true) => {
+  return useQuery({
+    queryKey: ["group-by-token", token],
+    queryFn: () => groupInvitationsApi.getGroupByJoinToken(token),
+    enabled: enabled && !!token,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Join group with token mutation
+export const useJoinGroupWithToken = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (token: string) => groupInvitationsApi.joinGroupWithLink(token),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: groupsQueryKeys.lists() });
+      toast.success("Successfully joined the group!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to join group";
+
+      toast.error(errorMessage);
+    },
+  });
+};

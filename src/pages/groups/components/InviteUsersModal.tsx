@@ -148,7 +148,7 @@ export default function InviteUsersModal({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
+            <ModalHeader className="flex flex-col gap-1 text-foreground">
               {t("groups.inviteModal.title")} {group?.name}
             </ModalHeader>
             <ModalBody>

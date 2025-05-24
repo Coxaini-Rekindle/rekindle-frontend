@@ -113,4 +113,18 @@ export const groupInvitationsApi = {
 
     return response.data;
   },
+
+  // Get group info by invite ID
+  getGroupByInviteId: async (inviteId: string): Promise<GroupDto> => {
+    const response = await apiClient.get(`/invitations/${inviteId}/group`);
+
+    return response.data;
+  },
+
+  // Get group info by join token
+  getGroupByJoinToken: async (token: string): Promise<GroupDto> => {
+    const response = await apiClient.get(`/groups/join/${token}/info`);
+
+    return response.data;
+  },
 };

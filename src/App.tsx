@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import Groups from "./pages/groups/Groups";
+import GroupInviteAccept from "./pages/groups/GroupInviteAccept";
 import "./i18n/i18n";
 
 function App() {
@@ -27,6 +28,10 @@ function App() {
         }
         path="/groups"
       />
+
+      {/* Group invitation routes - public access */}
+      <Route element={<GroupInviteAccept />} path="/groups/invites/:inviteId" />
+      <Route element={<GroupInviteAccept />} path="/groups/join/:token" />
 
       {/* Public routes */}
       <Route element={<Login />} path="/login" />

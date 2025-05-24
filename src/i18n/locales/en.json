@@ -111,6 +111,35 @@
       }
     }
   },
+  "groupInvite": {
+    "title": "Group Invitation",
+    "loading": "Loading invitation details...",
+    "error": "Failed to load invitation details",
+    "invalidInvite": "This invitation is invalid or has expired",
+    "alreadyMember": "You are already a member of this group",
+    "authRequired": "Please sign in or create an account to accept this group invitation",
+    "groupInfo": {
+      "title": "You've been invited to join",
+      "description": "Description",
+      "memberCount": "{{count}} member",
+      "memberCount_plural": "{{count}} members",
+      "createdAt": "Created {{date}}"
+    },
+    "actions": {
+      "accept": "Accept Invitation",
+      "decline": "Decline",
+      "goToGroup": "Go to Group",
+      "backToGroups": "Back to Groups",
+      "login": "Sign In",
+      "register": "Create Account"
+    },
+    "messages": {
+      "accepting": "Accepting invitation...",
+      "success": "Successfully joined the group!",
+      "error": "Failed to accept invitation",
+      "alreadyAccepted": "You have already accepted this invitation"
+    }
+  },
   "login": {
     "title": "Welcome Back",
     "subtitle": "Sign in to your Rekindle account",
