@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -20,12 +20,43 @@ import {
   logout as logoutAction,
   clearError,
 } from "../store/slices/authSlice";
+import { RootState } from "../store";
+
+// Helper function to wait for Redux state update and then navigate
+const useAuthNavigate = () => {
+  const navigate = useNavigate();
+  const store = useStore();
+
+  return (path: string) => {
+    // Get initial auth state
+    const initialState = store.getState() as RootState;
+    const initialIsAuthenticated = initialState.auth.isAuthenticated;
+
+    // If already authenticated, navigate immediately
+    if (initialIsAuthenticated) {
+      navigate(path);
+
+      return;
+    }
+
+    // Otherwise set up a one-time listener for state changes
+    const unsubscribe = store.subscribe(() => {
+      const currentState = store.getState() as RootState;
+
+      if (currentState.auth.isAuthenticated && !initialIsAuthenticated) {
+        // State has changed to authenticated, navigate and unsubscribe
+        navigate(path);
+        unsubscribe();
+      }
+    });
+  };
+};
 
 // Hook for login mutation
 export const useLogin = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const navigateAfterAuth = useAuthNavigate();
 
   return useMutation({
     mutationFn: (credentials: LoginRequest) => {
@@ -37,7 +68,7 @@ export const useLogin = () => {
       dispatch(loginSuccess(data));
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast.success("Login successful! Welcome back.");
-      navigate("/");
+      navigateAfterAuth("/groups");
     },
     onError: (error: any) => {
       const errorMessage = error.response?.data?.message || "Login failed";
@@ -52,8 +83,8 @@ export const useLogin = () => {
 // Hook for registration mutation
 export const useRegister = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const navigateAfterAuth = useAuthNavigate();
 
   return useMutation({
     mutationFn: (userData: RegisterRequest) => {
@@ -65,7 +96,7 @@ export const useRegister = () => {
       dispatch(registerSuccess(data));
       queryClient.invalidateQueries({ queryKey: ["user"] });
       toast.success("Registration successful! Welcome to Rekindle.");
-      navigate("/");
+      navigateAfterAuth("/groups");
     },
     onError: (error: any) => {
       const errorMessage =

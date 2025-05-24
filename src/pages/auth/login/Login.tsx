@@ -19,7 +19,7 @@ const Login: React.FC = () => {
 
   // Redirect if already authenticated
   if (isAuthenticated) {
-    return <Navigate replace to="/" />;
+    return <Navigate replace to="/groups" />;
   }
 
   const handleSubmit = (e: React.FormEvent) => {

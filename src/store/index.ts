@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./slices/authSlice";
+import groupsReducer from "./slices/groupsSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    groups: groupsReducer,
     // Add other reducers here as needed
   },
   middleware: (getDefaultMiddleware) =>

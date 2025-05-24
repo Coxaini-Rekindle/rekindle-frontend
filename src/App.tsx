@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
+import Groups from "./pages/groups/Groups";
 import "./i18n/i18n";
 
 function App() {
@@ -17,6 +18,14 @@ function App() {
           </ProtectedRoute>
         }
         path="/"
+      />
+      <Route
+        element={
+          <ProtectedRoute>
+            <Groups />
+          </ProtectedRoute>
+        }
+        path="/groups"
       />
 
       {/* Public routes */}

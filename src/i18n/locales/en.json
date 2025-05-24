@@ -1,4 +1,63 @@
 {
+  "groups": {
+    "title": "My Groups",
+    "createNew": "Create New Group",
+    "createFirst": "Create Your First Group",
+    "emptyState": "You don't have any groups yet",
+    "viewGroup": "View Group",
+    "editGroup": "Edit Group",
+    "inviteUsers": "Invite Users",
+    "members": "member",
+    "membersPlural": "members",
+    "others": "others",
+    "noMembers": "No members yet",
+    "errorLoading": "Failed to load groups. Please try again.",
+    "retry": "Retry",
+    "modal": {
+      "title": "Create New Group",
+      "nameLabel": "Group Name",
+      "namePlaceholder": "Enter group name",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe your group",
+      "inviteLabel": "Invite Members",
+      "invitePlaceholder": "Enter email address and press Enter",
+      "emailsAdded": "email added",
+      "emailsAddedPlural": "emails added",
+      "createButton": "Create Group",
+      "cancelButton": "Cancel",
+      "validation": {
+        "nameRequired": "Group name is required",
+        "emailInvalid": "Please enter a valid email address"
+      }
+    },
+    "updateModal": {
+      "title": "Update Group",
+      "updateButton": "Update Group",
+      "membersTab": "Members",
+      "settingsTab": "Settings",
+      "membersList": "Group Members",
+      "membersCount": "{{count}} member",
+      "membersCount_plural": "{{count}} members",
+      "owner": "Owner",
+      "member": "Member",
+      "removeMember": "Remove Member",
+      "removeConfirm": "Are you sure you want to remove {{name}} from the group?",
+      "deleteGroup": "Delete Group",
+      "deleteGroupConfirm": "Are you sure you want to delete this group? This action cannot be undone.",
+      "deleteGroupButton": "Delete Group",
+      "dangerZone": "Danger Zone",
+      "dangerZoneDescription": "These actions are irreversible. Please be careful."
+    },
+    "inviteModal": {
+      "title": "Invite Users to",
+      "emailInvitations": "Email Invitations",
+      "emailPlaceholder": "Enter email address",
+      "invitationLink": "Invitation Link",
+      "createLink": "Create Invitation Link",
+      "copyLink": "Copy Link",
+      "sendInvitations": "Send Invitations"
+    }
+  },
   "register": {
     "title": "Create Your Account",
     "subtitle": "Join Rekindle and begin your journey",

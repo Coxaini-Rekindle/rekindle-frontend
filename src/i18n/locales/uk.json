@@ -1,4 +1,49 @@
-{
+{  "groups": {
+    "title": "Мої Групи",
+    "createNew": "Створити Нову Групу",
+    "createFirst": "Створити Вашу Першу Групу",
+    "emptyState": "У вас ще немає груп",
+    "viewGroup": "Переглянути Групу",
+    "members": "учасник",
+    "membersPlural": "учасників",
+    "others": "інших",
+    "noMembers": "Ще немає учасників",
+    "modal": {
+      "title": "Створити Нову Групу",
+      "nameLabel": "Назва Групи",
+      "namePlaceholder": "Введіть назву групи",
+      "descriptionLabel": "Опис",
+      "descriptionPlaceholder": "Опишіть вашу групу",
+      "inviteLabel": "Запросити Учасників",
+      "invitePlaceholder": "Введіть електронну адресу та натисніть Enter",
+      "emailsAdded": "електронна адреса додана",
+      "emailsAddedPlural": "електронних адрес додано",
+      "createButton": "Створити Групу",
+      "cancelButton": "Скасувати",
+      "validation": {
+        "nameRequired": "Назва групи обов'язкова",
+        "emailInvalid": "Будь ласка, введіть дійсну електронну адресу"
+      }
+    },
+    "updateModal": {
+      "title": "Оновити Групу",
+      "updateButton": "Оновити Групу",
+      "membersTab": "Учасники",
+      "settingsTab": "Налаштування",
+      "membersList": "Учасники Групи",
+      "membersCount": "{{count}} учасник",
+      "membersCount_plural": "{{count}} учасників",
+      "owner": "Власник",
+      "member": "Учасник",
+      "removeMember": "Видалити Учасника",
+      "removeConfirm": "Ви впевнені, що хочете видалити {{name}} з групи?",
+      "deleteGroup": "Видалити Групу",
+      "deleteGroupConfirm": "Ви впевнені, що хочете видалити цю групу? Цю дію неможливо скасувати.",
+      "deleteGroupButton": "Видалити Групу",
+      "dangerZone": "Небезпечна Зона",
+      "dangerZoneDescription": "Ці дії є незворотними. Будьте обережні."
+    }
+  },
   "register": {
     "title": "Створіть свій обліковий запис",
     "subtitle": "Приєднуйтесь до Rekindle і почніть свою подорож",
