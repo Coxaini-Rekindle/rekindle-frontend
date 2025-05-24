@@ -17,19 +17,12 @@ import { Avatar } from "@heroui/avatar";
 import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
 import { Spinner } from "@heroui/spinner";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/dropdown";
 import { useTranslation } from "react-i18next";
 import {
   MdGroup,
   MdDescription,
   MdPeople,
   MdSettings,
-  MdMoreVert,
   MdPersonRemove,
   MdDelete,
   MdWarning,
@@ -261,24 +254,15 @@ export default function UpdateGroupModal({
 
                   {/* Only show remove option for members (not owners) and only if current user is owner */}
                   {group?.isCurrentUserOwner && member.role !== "Owner" && (
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button isIconOnly size="sm" variant="light">
-                          <MdMoreVert />
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu>
-                        <DropdownItem
-                          key="remove"
-                          className="text-danger"
-                          color="danger"
-                          startContent={<MdPersonRemove />}
-                          onPress={() => setMemberToRemove(member)}
-                        >
-                          {t("groups.updateModal.removeMember")}
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
+                    <Button
+                      isIconOnly
+                      color="danger"
+                      size="sm"
+                      variant="light"
+                      onPress={() => setMemberToRemove(member)}
+                    >
+                      <MdPersonRemove />
+                    </Button>
                   )}
                 </div>
               </div>
@@ -292,7 +276,6 @@ export default function UpdateGroupModal({
   return (
     <>
       <Modal
-        isDismissable={true}
         isOpen={isOpen}
         size="lg"
         onOpenChange={(open) => {
@@ -303,7 +286,7 @@ export default function UpdateGroupModal({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-primary-foreground">
                 {t("groups.updateModal.title")}
               </ModalHeader>
               <ModalBody>
@@ -363,9 +346,11 @@ export default function UpdateGroupModal({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>{t("groups.updateModal.removeMember")}</ModalHeader>
+              <ModalHeader className="text-foreground">
+                {t("groups.updateModal.removeMember")}
+              </ModalHeader>
               <ModalBody>
-                <p>
+                <p className="text-foreground">
                   {t("groups.updateModal.removeConfirm", {
                     name: memberToRemove?.name,
                   })}
