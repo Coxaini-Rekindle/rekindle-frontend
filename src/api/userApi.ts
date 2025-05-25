@@ -1,23 +1,27 @@
+import type { UserProfile } from "@/types/user";
+
 import apiClient from "./apiClient";
 
 // User API
 export const userApi = {
   // Get current user profile
-  getUserProfile: async () => {
+  getUserProfile: async (): Promise<UserProfile> => {
     const response = await apiClient.get("/users/profile");
 
     return response.data;
   },
 
   // Update user name
-  updateName: async (name: string) => {
+  updateName: async (name: string): Promise<{ message: string }> => {
     const response = await apiClient.put("/users/name", { name });
 
     return response.data;
   },
 
   // Upload avatar
-  uploadAvatar: async (avatarFile: File) => {
+  uploadAvatar: async (
+    avatarFile: File,
+  ): Promise<{ message: string; avatarFileId: string }> => {
     const formData = new FormData();
 
     formData.append("avatar", avatarFile);
@@ -32,7 +36,7 @@ export const userApi = {
   },
 
   // Get avatar by fileId
-  getAvatarUrl: (fileId: string) => {
+  getAvatarUrl: (fileId: string): string => {
     return `${apiClient.defaults.baseURL}/users/avatar/${fileId}`;
   },
 };

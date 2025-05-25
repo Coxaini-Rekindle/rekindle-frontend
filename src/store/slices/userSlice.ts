@@ -1,19 +1,41 @@
 import type { UserProfile } from "@/types/user";
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 import { userApi } from "@/api/userApi";
 
 interface UserState {
+  // Authentication state
+  isAuthenticated: boolean;
+  currentUserId: string | null;
+
+  // Profile state
   profile: UserProfile | null;
-  isLoading: boolean;
-  error: string | null;
+  profileLoading: boolean;
+  profileError: string | null;
+  profileFetched: boolean; // Track if profile has been fetched
+
+  // Update name state
+  updateNameLoading: boolean;
+  updateNameError: string | null;
+
+  // Upload avatar state
+  uploadAvatarLoading: boolean;
+  uploadAvatarError: string | null;
 }
 
 const initialState: UserState = {
+  isAuthenticated: false,
+  currentUserId: null,
   profile: null,
-  isLoading: false,
-  error: null,
+  profileLoading: false,
+  profileError: null,
+  profileFetched: false,
+  updateNameLoading: false,
+  updateNameError: null,
+  uploadAvatarLoading: false,
+  uploadAvatarError: null,
 };
 
 // Async thunks
@@ -21,19 +43,28 @@ export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
   async (_, { rejectWithValue }) => {
     try {
-      return await userApi.getUserProfile();
+      const profile = await userApi.getUserProfile();
+
+      return profile;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.detail || error.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { user: UserState };
+
+      // Don't fetch if already loading or already fetched
+      return !state.user.profileLoading && !state.user.profileFetched;
+    },
   },
 );
 
 export const updateUserName = createAsyncThunk(
   "user/updateName",
-  async (name: string, { rejectWithValue, dispatch }) => {
+  async (name: string, { rejectWithValue }) => {
     try {
       await userApi.updateName(name);
-      dispatch(fetchUserProfile());
 
       return name;
     } catch (error: any) {
@@ -44,12 +75,11 @@ export const updateUserName = createAsyncThunk(
 
 export const uploadUserAvatar = createAsyncThunk(
   "user/uploadAvatar",
-  async (avatarFile: File, { rejectWithValue, dispatch }) => {
+  async (avatarFile: File, { rejectWithValue }) => {
     try {
-      await userApi.uploadAvatar(avatarFile);
-      dispatch(fetchUserProfile());
+      const response = await userApi.uploadAvatar(avatarFile);
 
-      return true;
+      return response.avatarFileId;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.detail || error.message);
     }
@@ -60,54 +90,100 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearUserError: (state) => {
-      state.error = null;
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
+    setCurrentUserId: (state, action: PayloadAction<string | null>) => {
+      state.currentUserId = action.payload;
+    },
+    logout: (state) => {
+      state.isAuthenticated = false;
+      state.currentUserId = null;
+      state.profile = null;
+      state.profileError = null;
+      state.profileFetched = false;
+      state.updateNameError = null;
+      state.uploadAvatarError = null;
+    },
+    clearProfileError: (state) => {
+      state.profileError = null;
+    },
+    clearUpdateNameError: (state) => {
+      state.updateNameError = null;
+    },
+    clearUploadAvatarError: (state) => {
+      state.uploadAvatarError = null;
     },
   },
   extraReducers: (builder) => {
+    // Fetch user profile
     builder
-      // Fetch profile
       .addCase(fetchUserProfile.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+        state.profileLoading = true;
+        state.profileError = null;
       })
-      .addCase(
-        fetchUserProfile.fulfilled,
-        (state, action: PayloadAction<UserProfile>) => {
-          state.isLoading = false;
-          state.profile = action.payload;
-        },
-      )
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.profileLoading = false;
+        state.profile = action.payload;
+        state.profileError = null;
+        state.profileFetched = true;
+      })
       .addCase(fetchUserProfile.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      })
-      // Update name
+        state.profileLoading = false;
+        state.profileError = action.payload as string;
+      });
+
+    // Update user name
+    builder
       .addCase(updateUserName.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+        state.updateNameLoading = true;
+        state.updateNameError = null;
       })
-      .addCase(updateUserName.fulfilled, (state) => {
-        state.isLoading = false;
+      .addCase(updateUserName.fulfilled, (state, action) => {
+        state.updateNameLoading = false;
+        state.updateNameError = null;
+        // Update profile name immediately
+        if (state.profile) {
+          state.profile.name = action.payload;
+        }
+        toast.success("Name updated successfully!");
       })
       .addCase(updateUserName.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      })
-      // Upload avatar
+        state.updateNameLoading = false;
+        state.updateNameError = action.payload as string;
+        toast.error(`Error updating name: ${action.payload}`);
+      });
+
+    // Upload avatar
+    builder
       .addCase(uploadUserAvatar.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+        state.uploadAvatarLoading = true;
+        state.uploadAvatarError = null;
       })
-      .addCase(uploadUserAvatar.fulfilled, (state) => {
-        state.isLoading = false;
+      .addCase(uploadUserAvatar.fulfilled, (state, action) => {
+        state.uploadAvatarLoading = false;
+        state.uploadAvatarError = null;
+        // Update profile avatar immediately
+        if (state.profile) {
+          state.profile.avatarFileId = action.payload;
+        }
+        toast.success("Avatar updated successfully!");
       })
       .addCase(uploadUserAvatar.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
+        state.uploadAvatarLoading = false;
+        state.uploadAvatarError = action.payload as string;
+        toast.error(`Error uploading avatar: ${action.payload}`);
       });
   },
 });
 
-export const { clearUserError } = userSlice.actions;
+export const {
+  setAuthenticated,
+  setCurrentUserId,
+  logout,
+  clearProfileError,
+  clearUpdateNameError,
+  clearUploadAvatarError,
+} = userSlice.actions;
+
 export default userSlice.reducer;

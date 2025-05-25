@@ -34,7 +34,7 @@ import {
 
 import { useLogout } from "@/hooks/useAuth";
 import { useUserGroups } from "@/hooks/useGroups";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useUserProfile } from "@/hooks/useUser";
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation();

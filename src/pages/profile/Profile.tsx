@@ -1,49 +1,50 @@
-import { useEffect, useState, useRef } from "react";
-import { Button } from "@heroui/button";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { Avatar } from "@heroui/avatar";
-import { Spinner } from "@heroui/spinner";
+import React, { useState, useRef, useEffect } from "react";
+import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Divider } from "@heroui/divider";
+import { Avatar } from "@heroui/avatar";
+import { Button } from "@heroui/button";
+import { Spinner } from "@heroui/spinner";
+import { Input } from "@heroui/input";
+import { MdUpload, MdEdit, MdCheck, MdClose } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import { MdEdit, MdUpload, MdCheck, MdClose } from "react-icons/md";
 
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useUserProfile } from "@/hooks/useUser";
 
 const Profile = () => {
   const { t } = useTranslation();
+
+  // Redux hooks
   const {
     profile,
-    isLoading,
-    error,
-    getProfile,
+    profileLoading,
+    profileError,
+    updateNameLoading,
+    uploadAvatarLoading,
+    fetchProfile,
     updateName,
     uploadAvatar,
-    clearError,
     getAvatarUrl,
   } = useUserProfile();
 
+  // Local state
   const [isEditingName, setIsEditingName] = useState(false);
-  const [nameValue, setNameValue] = useState("");
+  const [nameValue, setNameValue] = useState(profile?.name || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Update local name value when profile changes
   useEffect(() => {
-    getProfile();
-  }, [getProfile]);
-
-  useEffect(() => {
-    if (profile) {
+    if (profile?.name) {
       setNameValue(profile.name);
     }
-  }, [profile]);
+  }, [profile?.name]);
 
+  // Show error toast if profile loading fails
   useEffect(() => {
-    if (error) {
-      toast.error(`${t("common.error")}: ${error}`);
-      clearError();
+    if (profileError) {
+      toast.error(`${t("common.error")}: ${profileError}`);
     }
-  }, [error, clearError, t]);
+  }, [profileError, t]);
 
   const handleNameEditClick = () => {
     setIsEditingName(true);
@@ -53,6 +54,7 @@ const Profile = () => {
     setNameValue(profile?.name || "");
     setIsEditingName(false);
   };
+
   const handleNameSave = async () => {
     if (!nameValue.trim()) {
       toast.error(t("profile.nameRequired"));
@@ -63,9 +65,8 @@ const Profile = () => {
     try {
       await updateName(nameValue);
       setIsEditingName(false);
-      toast.success(t("profile.nameUpdateSuccess"));
-    } catch (err) {
-      // Error is handled by the userSlice and displayed through the error effect
+    } catch {
+      // Error is handled by the Redux thunk
     }
   };
 
@@ -94,9 +95,8 @@ const Profile = () => {
 
     try {
       await uploadAvatar(file);
-      toast.success(t("profile.avatarUpdateSuccess"));
-    } catch (err) {
-      // Error is handled by the userSlice and displayed through the error effect
+    } catch {
+      // Error is handled by the Redux thunk
     } finally {
       // Clear the input value to allow uploading the same file again
       if (fileInputRef.current) {
@@ -105,10 +105,31 @@ const Profile = () => {
     }
   };
 
-  if (isLoading && !profile) {
+  if (profileLoading) {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-200px)]">
         <Spinner color="primary" size="lg" />
+      </div>
+    );
+  }
+
+  if (profileError) {
+    return (
+      <div className="container max-w-3xl mx-auto py-8 px-4">
+        <Card className="mb-6">
+          <CardBody>
+            <div className="text-center py-8">
+              <p className="text-danger">{t("profile.loadError")}</p>
+              <Button
+                className="mt-4"
+                color="primary"
+                onClick={() => fetchProfile()}
+              >
+                {t("common.retry")}
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
       </div>
     );
   }
@@ -164,6 +185,8 @@ const Profile = () => {
               />
               <Button
                 color="primary"
+                disabled={uploadAvatarLoading}
+                isLoading={uploadAvatarLoading}
                 size="sm"
                 startContent={<MdUpload />}
                 variant="flat"
@@ -188,10 +211,15 @@ const Profile = () => {
                           classNames={{
                             inputWrapper: "!bg-default-100",
                           }}
+                          disabled={updateNameLoading}
                           placeholder={t("profile.enterName")}
                           value={nameValue}
-                          onChange={(e) => setNameValue(e.target.value)}
-                          onKeyDown={(e) => {
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setNameValue(e.target.value)
+                          }
+                          onKeyDown={(
+                            e: React.KeyboardEvent<HTMLInputElement>,
+                          ) => {
                             if (e.key === "Enter") handleNameSave();
                             if (e.key === "Escape") handleNameCancel();
                           }}
@@ -199,6 +227,8 @@ const Profile = () => {
                         <Button
                           isIconOnly
                           color="success"
+                          disabled={updateNameLoading}
+                          isLoading={updateNameLoading}
                           variant="flat"
                           onClick={handleNameSave}
                         >
@@ -206,6 +236,7 @@ const Profile = () => {
                         </Button>
                         <Button
                           isIconOnly
+                          disabled={updateNameLoading}
                           variant="flat"
                           onClick={handleNameCancel}
                         >
