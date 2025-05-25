@@ -34,6 +34,7 @@ import {
   useRemoveUserFromGroup,
   useDeleteGroup,
 } from "@/hooks/useGroups";
+import { useUserProfile } from "@/hooks/useUser";
 
 interface UpdateGroupModalProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ export default function UpdateGroupModal({
   group,
 }: UpdateGroupModalProps) {
   const { t } = useTranslation();
+  const { getAvatarUrl } = useUserProfile();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<{ name?: string }>({});
@@ -234,6 +236,11 @@ export default function UpdateGroupModal({
                     className="flex-shrink-0"
                     name={member.name.charAt(0).toUpperCase()}
                     size="sm"
+                    src={
+                      member.avatarFileId
+                        ? getAvatarUrl(member.avatarFileId)
+                        : undefined
+                    }
                   />
                   <div className="flex flex-col">
                     <span className="font-medium">{member.name}</span>

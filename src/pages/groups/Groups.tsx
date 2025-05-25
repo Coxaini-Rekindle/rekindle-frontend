@@ -1,6 +1,7 @@
 import type { GroupDto } from "@/types/group";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
 import { Spinner } from "@heroui/spinner";
@@ -15,6 +16,7 @@ import { useUserGroups } from "@/hooks/useGroups";
 
 export default function Groups() {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedGroup, setSelectedGroup] = useState<GroupDto | null>(null);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -22,6 +24,17 @@ export default function Groups() {
 
   // Fetch groups from API
   const { data: groups = [], isLoading, error } = useUserGroups();
+
+  // Check for URL parameters to open create modal
+  useEffect(() => {
+    const shouldCreateGroup = searchParams.get("create");
+
+    if (shouldCreateGroup === "true") {
+      onOpen();
+      // Remove the parameter from URL without triggering a navigation
+      setSearchParams({});
+    }
+  }, [searchParams, onOpen, setSearchParams]);
 
   const handleViewGroup = (groupId: string) => {
     // TODO: Navigate to group details page

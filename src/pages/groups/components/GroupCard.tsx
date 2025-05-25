@@ -1,5 +1,12 @@
 import type { GroupDto } from "@/types/group";
 
+// Define a simplified member type to match the actual API response
+interface SimplifiedGroupMember {
+  userId: string;
+  name: string;
+  avatarFileId?: string;
+}
+
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Avatar, AvatarGroup } from "@heroui/avatar";
@@ -12,9 +19,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { MdAdd, MdMoreVert, MdEdit, MdPersonAdd } from "react-icons/md";
 
+import { useUserProfile } from "@/hooks/useUser";
+
 interface GroupCardProps {
   group: GroupDto;
-  members?: { id: string; name: string; email: string; avatar?: string }[];
   onViewGroup?: (groupId: string) => void;
   onEditGroup?: (group: GroupDto) => void;
   onInviteUsers?: (group: GroupDto) => void;
@@ -22,12 +30,12 @@ interface GroupCardProps {
 
 export default function GroupCard({
   group,
-  members = [],
   onViewGroup,
   onEditGroup,
   onInviteUsers,
 }: GroupCardProps) {
   const { t } = useTranslation();
+  const { getAvatarUrl } = useUserProfile();
 
   const handleViewGroup = () => {
     if (onViewGroup) {
@@ -47,7 +55,8 @@ export default function GroupCard({
     }
   };
 
-  const displayMemberCount = group.memberCount || members.length;
+  const displayMemberCount = group.memberCount;
+  const members = (group.members || []) as SimplifiedGroupMember[];
 
   return (
     <Card className="w-full hover:scale-105 transition-all duration-300">
@@ -129,12 +138,14 @@ export default function GroupCard({
               <AvatarGroup isBordered max={4} size="sm">
                 {members.map((member) => (
                   <Avatar
-                    key={member.id}
+                    key={member.userId}
+                    showFallback
                     className="w-8 h-8"
-                    name={member.name}
+                    name={member.name.charAt(0).toUpperCase()}
                     src={
-                      member.avatar ||
-                      `https://i.pravatar.cc/150?u=${member.email}`
+                      member.avatarFileId
+                        ? getAvatarUrl(member.avatarFileId)
+                        : undefined
                     }
                   />
                 ))}

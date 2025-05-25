@@ -8,6 +8,7 @@ export interface GroupDto {
   memberCount: number;
   isCurrentUserMember: boolean;
   isCurrentUserOwner: boolean;
+  members?: GroupMemberDto[];
 }
 
 export interface GroupMemberDto {
@@ -17,6 +18,7 @@ export interface GroupMemberDto {
   email: string;
   role: GroupUserRole;
   joinedAt: string;
+  avatarFileId?: string;
 }
 
 export enum GroupUserRole {
