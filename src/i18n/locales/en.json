@@ -72,7 +72,7 @@
       "username": "Enter your username",
       "email": "Enter your email",
       "password": "Enter your password",
-      "name" : "Enter your name"
+      "name": "Enter your name"
     },
     "validation": {
       "usernameRequired": "Please enter your username",
@@ -237,11 +237,57 @@
   },
   "common": {
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "close": "Close",
+    "cancel": "Cancel"
+  },
+  "memories": {
+    "title": "Memories",
+    "subtitle": "Relive your favorite moments with friends and family",
+    "createMemory": "Create Memory",
+    "createFirstMemory": "Create Your First Memory",
+    "searchPlaceholder": "Search memories, locations, or people...",
+    "sortBy": "Sort by",
+    "viewThread": "View Thread",
+    "comments": "Comments",
+    "addComment": "Add a comment...",
+    "memoryDetail": "Memory Details",
+    "loading": "Loading memory...",
+    "addPost": "Add a post",
+    "postPlaceholder": "Share your thoughts about this memory...",
+    "post": "Post",
+    "commentsTitle": "Comments & Posts",
+    "noComments": "No comments yet. Be the first to share your thoughts!",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} minute ago",
+    "minutesAgo_plural": "{{count}} minutes ago",
+    "hoursAgo": "{{count}} hour ago",
+    "hoursAgo_plural": "{{count}} hours ago",
+    "daysAgo": "{{count}} day ago",
+    "daysAgo_plural": "{{count}} days ago",
+    "noSearchResults": "No memories found for your search",
+    "sort": {
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "mostPhotos": "Most Photos",
+      "mostPeople": "Most People"
+    },
+    "stats": {
+      "totalMemories": "Total Memories",
+      "totalPhotos": "Total Photos",
+      "totalPeople": "Total People",
+      "totalLocations": "Total Locations"
+    },
+    "noMemories": {
+      "title": "No memories found",
+      "subtitle": "Start creating memories to see them here",
+      "searchSubtitle": "Try adjusting your search terms"
+    }
   },
   "navbar": {
     "home": "Home",
     "groups": "Groups",
+    "memories": "Memories",
     "closeMenu": "Close menu",
     "openMenu": "Open menu",
     "groupShortcuts": "Group shortcuts",

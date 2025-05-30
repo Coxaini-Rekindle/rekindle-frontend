@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { NavbarMenu, NavbarMenuItem } from "@heroui/navbar";
 import { Button } from "@heroui/button";
-import { MdGroup, MdHome } from "react-icons/md";
+import { MdGroup, MdHome, MdPhotoLibrary } from "react-icons/md";
 
 import { useUserGroups } from "@/hooks/useGroups";
 
@@ -28,6 +28,7 @@ const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({
   const menuItems = [
     { label: t("navbar.home"), path: "/", icon: MdHome },
     { label: t("navbar.groups"), path: "/groups", icon: MdGroup },
+    { label: t("navbar.memories"), path: "/memories", icon: MdPhotoLibrary },
   ];
 
   return (

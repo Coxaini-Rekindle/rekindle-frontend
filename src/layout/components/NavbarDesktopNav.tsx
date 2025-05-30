@@ -11,7 +11,7 @@ import {
 } from "@heroui/dropdown";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
-import { MdAdd, MdGroup, MdHome } from "react-icons/md";
+import { MdAdd, MdGroup, MdHome, MdPhotoLibrary } from "react-icons/md";
 
 import { useUserGroups } from "@/hooks/useGroups";
 
@@ -30,6 +30,7 @@ const NavbarDesktopNav: React.FC = () => {
   const menuItems = [
     { label: t("navbar.home"), path: "/", icon: MdHome },
     { label: t("navbar.groups"), path: "/groups", icon: MdGroup },
+    { label: t("navbar.memories"), path: "/memories", icon: MdPhotoLibrary },
   ];
 
   return (

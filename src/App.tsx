@@ -7,6 +7,8 @@ import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import Groups from "./pages/groups/Groups";
 import GroupInviteAccept from "./pages/groups/GroupInviteAccept";
+import Memories from "./pages/memories/Memories";
+import MemoryDetail from "./pages/memories/MemoryDetail";
 import Profile from "./pages/profile";
 import "./i18n/i18n";
 
@@ -33,6 +35,28 @@ function App() {
           </ProtectedRoute>
         }
         path="/groups"
+      />
+
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Memories />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+        path="/memories"
+      />
+
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <MemoryDetail />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+        path="/memories/:memoryId"
       />
 
       <Route
