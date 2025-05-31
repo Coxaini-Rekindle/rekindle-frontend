@@ -5,104 +5,205 @@
 /* Family Archive Background */
 main {
   @apply flex flex-col items-center justify-center min-h-screen;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(255, 218, 185, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 245, 222, 0.4) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(253, 240, 226, 0.2) 0%, transparent 50%),
-    linear-gradient(135deg, #fef7ed 0%, #fdf4f0 25%, #fef2e8 50%, #fdf6f0 75%, #fef7ed 100%);
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 218, 185, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 245, 222, 0.4) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(253, 240, 226, 0.2) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      135deg,
+      #fef7ed 0%,
+      #fdf4f0 25%,
+      #fef2e8 50%,
+      #fdf6f0 75%,
+      #fef7ed 100%
+    );
   background-attachment: fixed;
   position: relative;
 }
 
 /* Dark mode family background */
 .dark main {
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(101, 67, 33, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(92, 64, 51, 0.1) 0%, transparent 50%),
-    linear-gradient(135deg, #1a1a1a 0%, #2d1b14 25%, #1f1f1f 50%, #2a1810 75%, #1a1a1a 100%);
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(139, 69, 19, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(101, 67, 33, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(92, 64, 51, 0.1) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      135deg,
+      #1a1a1a 0%,
+      #2d1b14 25%,
+      #1f1f1f 50%,
+      #2a1810 75%,
+      #1a1a1a 100%
+    );
 }
 
 /* Subtle texture overlay */
 main::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
-    radial-gradient(circle at 2px 2px, rgba(139, 69, 19, 0.05) 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    rgba(139, 69, 19, 0.05) 1px,
+    transparent 0
+  );
   background-size: 40px 40px;
   pointer-events: none;
   z-index: -1;
 }
 
 .dark main::before {
-  background-image: 
-    radial-gradient(circle at 2px 2px, rgba(222, 184, 135, 0.03) 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    rgba(222, 184, 135, 0.03) 1px,
+    transparent 0
+  );
 }
 
 /* Floating family memory elements */
 main::after {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
-    radial-gradient(circle at 15% 25%, rgba(255, 182, 193, 0.12) 3px, transparent 4px),
-    radial-gradient(circle at 85% 75%, rgba(255, 218, 185, 0.15) 2px, transparent 3px),
-    radial-gradient(circle at 70% 15%, rgba(253, 240, 226, 0.1) 1.5px, transparent 2.5px),
-    radial-gradient(circle at 25% 85%, rgba(255, 245, 222, 0.12) 2.5px, transparent 3.5px),
-    radial-gradient(circle at 60% 60%, rgba(255, 239, 213, 0.08) 4px, transparent 5px),
-    radial-gradient(circle at 30% 70%, rgba(250, 235, 215, 0.1) 1px, transparent 2px);
-  background-size: 200px 200px, 180px 180px, 220px 220px, 160px 160px, 240px 240px, 140px 140px;
+  background-image: radial-gradient(
+      circle at 15% 25%,
+      rgba(255, 182, 193, 0.12) 3px,
+      transparent 4px
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(255, 218, 185, 0.15) 2px,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 70% 15%,
+      rgba(253, 240, 226, 0.1) 1.5px,
+      transparent 2.5px
+    ),
+    radial-gradient(
+      circle at 25% 85%,
+      rgba(255, 245, 222, 0.12) 2.5px,
+      transparent 3.5px
+    ),
+    radial-gradient(
+      circle at 60% 60%,
+      rgba(255, 239, 213, 0.08) 4px,
+      transparent 5px
+    ),
+    radial-gradient(
+      circle at 30% 70%,
+      rgba(250, 235, 215, 0.1) 1px,
+      transparent 2px
+    );
+  background-size:
+    200px 200px,
+    180px 180px,
+    220px 220px,
+    160px 160px,
+    240px 240px,
+    140px 140px;
   animation: float 25s ease-in-out infinite;
   pointer-events: none;
   z-index: -1;
 }
 
 .dark main::after {
-  background-image: 
-    radial-gradient(circle at 15% 25%, rgba(222, 184, 135, 0.06) 3px, transparent 4px),
-    radial-gradient(circle at 85% 75%, rgba(160, 82, 45, 0.08) 2px, transparent 3px),
-    radial-gradient(circle at 70% 15%, rgba(139, 69, 19, 0.05) 1.5px, transparent 2.5px),
-    radial-gradient(circle at 25% 85%, rgba(101, 67, 33, 0.06) 2.5px, transparent 3.5px),
-    radial-gradient(circle at 60% 60%, rgba(92, 64, 51, 0.04) 4px, transparent 5px),
-    radial-gradient(circle at 30% 70%, rgba(139, 69, 19, 0.05) 1px, transparent 2px);
+  background-image: radial-gradient(
+      circle at 15% 25%,
+      rgba(222, 184, 135, 0.06) 3px,
+      transparent 4px
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(160, 82, 45, 0.08) 2px,
+      transparent 3px
+    ),
+    radial-gradient(
+      circle at 70% 15%,
+      rgba(139, 69, 19, 0.05) 1.5px,
+      transparent 2.5px
+    ),
+    radial-gradient(
+      circle at 25% 85%,
+      rgba(101, 67, 33, 0.06) 2.5px,
+      transparent 3.5px
+    ),
+    radial-gradient(
+      circle at 60% 60%,
+      rgba(92, 64, 51, 0.04) 4px,
+      transparent 5px
+    ),
+    radial-gradient(
+      circle at 30% 70%,
+      rgba(139, 69, 19, 0.05) 1px,
+      transparent 2px
+    );
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-10px) rotate(1deg); }
-  66% { transform: translateY(-5px) rotate(-1deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
 }
 
 @layer components {
   .gradient-background {
     @apply bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 dark:from-gray-900 dark:via-amber-950 dark:to-gray-950;
   }
-  
+
   /* Family photo frame effect */
   .memory-card {
     @apply relative overflow-hidden rounded-xl shadow-lg;
     background: linear-gradient(145deg, #ffffff 0%, #f8f6f3 100%);
     border: 3px solid rgba(139, 69, 19, 0.1);
-    box-shadow: 
+    box-shadow:
       0 10px 25px rgba(139, 69, 19, 0.1),
       inset 0 1px 3px rgba(255, 255, 255, 0.8);
   }
-  
+
   .dark .memory-card {
     background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 100%);
     border: 3px solid rgba(222, 184, 135, 0.2);
-    box-shadow: 
+    box-shadow:
       0 10px 25px rgba(0, 0, 0, 0.3),
       inset 0 1px 3px rgba(222, 184, 135, 0.1);
   }
-  
+
   /* Warm content container */
   .content-container {
     @apply relative z-10;
@@ -112,7 +213,7 @@ main::after {
     border: 1px solid rgba(139, 69, 19, 0.1);
     box-shadow: 0 8px 32px rgba(139, 69, 19, 0.1);
   }
-  
+
   .dark .content-container {
     background: rgba(42, 42, 42, 0.85);
     border: 1px solid rgba(222, 184, 135, 0.2);
@@ -122,21 +223,27 @@ main::after {
   /* Family album page effect */
   .album-page {
     @apply relative p-6 rounded-2xl shadow-xl;
-    background: 
-      linear-gradient(145deg, #fefefe 0%, #f9f7f4 100%),
-      radial-gradient(circle at 10% 20%, rgba(255, 218, 185, 0.1) 0%, transparent 50%);
+    background: linear-gradient(145deg, #fefefe 0%, #f9f7f4 100%),
+      radial-gradient(
+        circle at 10% 20%,
+        rgba(255, 218, 185, 0.1) 0%,
+        transparent 50%
+      );
     border: 2px solid rgba(139, 69, 19, 0.08);
-    box-shadow: 
+    box-shadow:
       0 15px 35px rgba(139, 69, 19, 0.1),
       inset 0 2px 4px rgba(255, 255, 255, 0.9);
   }
 
   .dark .album-page {
-    background: 
-      linear-gradient(145deg, #2d2d2d 0%, #1e1e1e 100%),
-      radial-gradient(circle at 10% 20%, rgba(222, 184, 135, 0.08) 0%, transparent 50%);
+    background: linear-gradient(145deg, #2d2d2d 0%, #1e1e1e 100%),
+      radial-gradient(
+        circle at 10% 20%,
+        rgba(222, 184, 135, 0.08) 0%,
+        transparent 50%
+      );
     border: 2px solid rgba(222, 184, 135, 0.15);
-    box-shadow: 
+    box-shadow:
       0 15px 35px rgba(0, 0, 0, 0.4),
       inset 0 2px 4px rgba(222, 184, 135, 0.05);
   }
@@ -147,14 +254,14 @@ main::after {
     background: linear-gradient(145deg, #f4f1eb 0%, #ede6d3 100%);
     border: 1px solid rgba(139, 69, 19, 0.2);
     color: rgb(92, 64, 51);
-    box-shadow: 
+    box-shadow:
       0 4px 12px rgba(139, 69, 19, 0.1),
       inset 0 1px 2px rgba(255, 255, 255, 0.8);
   }
 
   .heritage-button:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
       0 6px 20px rgba(139, 69, 19, 0.15),
       inset 0 1px 2px rgba(255, 255, 255, 0.9);
   }
@@ -163,13 +270,13 @@ main::after {
     background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
     border: 1px solid rgba(222, 184, 135, 0.3);
     color: rgb(222, 184, 135);
-    box-shadow: 
+    box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.3),
       inset 0 1px 2px rgba(222, 184, 135, 0.1);
   }
 
   .dark .heritage-button:hover {
-    box-shadow: 
+    box-shadow:
       0 6px 20px rgba(0, 0, 0, 0.4),
       inset 0 1px 2px rgba(222, 184, 135, 0.15);
   }

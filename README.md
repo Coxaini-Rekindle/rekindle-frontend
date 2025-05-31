@@ -44,6 +44,7 @@ The application uses environment variables for API configurations. The following
 - `.env.production` - Production-specific variables (used with `npm run build`)
 
 API URL Configuration:
+
 ```
 VITE_API_URL=http://localhost:5049
 ```
