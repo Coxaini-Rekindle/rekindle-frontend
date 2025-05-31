@@ -1,20 +1,18 @@
 import type { MemoryDto } from "@/types/memory";
+import type { GroupMemberDto } from "@/types/group";
+import type { RootState } from "@/store";
 
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Avatar, AvatarGroup } from "@heroui/avatar";
 import { Button } from "@heroui/button";
-import { Chip } from "@heroui/chip";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import {
-  MdCalendarToday,
-  MdLocationOn,
-  MdMessage,
-  MdFavorite,
-  MdPeople,
-} from "react-icons/md";
+import { useSelector } from "react-redux";
+import { MdCalendarToday, MdFavorite, MdPeople, MdImage } from "react-icons/md";
 
 import MemoryCardImageGrid from "./MemoryCardImageGrid";
+
+import { userApi } from "@/api/userApi";
 
 interface MemoryCardProps {
   memory: MemoryDto;
@@ -24,28 +22,39 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Get unique locations from all images and memory locations
-  const getAllLocations = () => {
-    const locations = new Set<string>();
+  // Get group members to display participant names
+  const currentGroupMembers = useSelector(
+    (state: RootState) => state.groups.currentGroupMembers,
+  );
 
-    // Add memory-level locations
-    memory.locations.forEach((location) => {
-      if (location.name) {
-        locations.add(location.name);
+  // Get participant users
+  const getParticipants = (): GroupMemberDto[] => {
+    const participants: GroupMemberDto[] = [];
+
+    memory.participantsIds.forEach((participantId) => {
+      const member = currentGroupMembers.find(
+        (m) => m.userId === participantId,
+      );
+
+      if (member) {
+        participants.push(member);
       }
     });
 
-    // Add image-level locations
-    memory.images.forEach((image) => {
-      if (image.location?.name) {
-        locations.add(image.location.name);
-      }
-    });
-
-    return Array.from(locations);
+    return participants;
   };
 
-  const locations = getAllLocations();
+  // Get creator user
+  const getCreator = (): GroupMemberDto | null => {
+    const creatorMember = currentGroupMembers.find(
+      (m) => m.userId === memory.creatorUserId,
+    );
+
+    return creatorMember || null;
+  };
+
+  const participants = getParticipants();
+  const creator = getCreator();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -58,11 +67,11 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
   };
 
   const getReactionCount = () => {
-    return memory.reactions?.length || 0;
+    return memory.mainPost?.reactionSummary?.totalCount || 0;
   };
 
-  const getCommentCount = () => {
-    return memory.comments?.length || 0;
+  const getImageCount = () => {
+    return memory.mainPost?.images?.length || 0;
   };
 
   const handleOpenMemory = () => {
@@ -72,62 +81,96 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
   return (
     <Card className="w-full mb-6 hover:shadow-lg transition-shadow duration-200">
       <CardHeader className="flex gap-3 pb-3">
-        <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-2 text-small text-foreground-500 mb-2">
-            <MdCalendarToday size={16} />
-            <span>{formatDate(memory.createdAt)}</span>
-          </div>
+        <div className="flex items-center gap-3 w-full">
+          {creator && (
+            <Avatar
+              name={creator.name}
+              size="md"
+              src={
+                creator.avatarFileId
+                  ? userApi.getAvatarUrl(creator.avatarFileId)
+                  : undefined
+              }
+            />
+          )}
 
-          {locations.length > 0 && (
-            <div className="flex items-center gap-2 text-small text-foreground-500 mb-2">
-              <MdLocationOn size={16} />
-              <div className="flex flex-wrap gap-1">
-                {locations.slice(0, 2).map((location, index) => (
-                  <Chip key={index} size="sm" variant="flat">
-                    {location}
-                  </Chip>
-                ))}
-                {locations.length > 2 && (
-                  <Chip size="sm" variant="flat">
-                    +{locations.length - 2} more
-                  </Chip>
-                )}
+          <div className="flex flex-col flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-lg font-semibold text-foreground">
+                {memory.title}
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-4 text-small text-foreground-500">
+              <div className="flex items-center gap-1">
+                <MdCalendarToday size={14} />
+                <span>{formatDate(memory.createdAt)}</span>
               </div>
-            </div>
-          )}
 
-          {memory.people.length > 0 && (
-            <div className="flex items-center gap-2">
-              <MdPeople className="text-foreground-500" size={16} />
-              <AvatarGroup max={5} size="sm">
-                {memory.people.map((person) => (
-                  <Avatar
-                    key={person.id}
-                    name={person.name}
-                    size="sm"
-                    src={person.avatarUrl}
-                  />
-                ))}
-              </AvatarGroup>
-              {memory.people.length > 5 && (
-                <span className="text-small text-foreground-500">
-                  +{memory.people.length - 5} others
-                </span>
-              )}
+              {creator && <span>by {creator.name}</span>}
             </div>
-          )}
+          </div>
         </div>
       </CardHeader>
 
       <CardBody className="pt-0">
-        {/* Image Grid */}
-        <MemoryCardImageGrid images={memory.images} />
-
-        {/* Caption/Description */}
+        {/* Description */}
         {memory.description && (
           <p className="text-foreground-700 mb-4 line-clamp-3">
             {memory.description}
           </p>
+        )}
+
+        {/* Main Post Content Preview */}
+        {memory.mainPost && (
+          <div className="bg-content2 rounded-lg p-3 mb-4">
+            <p className="text-foreground-600 line-clamp-2">
+              {memory.mainPost.content}
+            </p>
+
+            {/* Display images using MemoryCardImageGrid if images exist */}
+            {memory.mainPost.images && memory.mainPost.images.length > 0 && (
+              <MemoryCardImageGrid
+                images={memory.mainPost.images}
+                postId={memory.mainPost.id}
+              />
+            )}
+
+            {getImageCount() > 0 && (
+              <div className="flex items-center gap-1 mt-2 text-small text-foreground-500">
+                <MdImage size={14} />
+                <span>
+                  {getImageCount()} {getImageCount() === 1 ? "image" : "images"}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Participants */}
+        {participants.length > 0 && (
+          <div className="flex items-center gap-2 mb-4">
+            <MdPeople className="text-foreground-500" size={16} />
+            <AvatarGroup max={5} size="sm">
+              {participants.map((participant) => (
+                <Avatar
+                  key={participant.userId}
+                  name={participant.name}
+                  size="sm"
+                  src={
+                    participant.avatarFileId
+                      ? userApi.getAvatarUrl(participant.avatarFileId)
+                      : undefined
+                  }
+                />
+              ))}
+            </AvatarGroup>
+            {participants.length > 5 && (
+              <span className="text-small text-foreground-500">
+                +{participants.length - 5} others
+              </span>
+            )}
+          </div>
         )}
 
         {/* Interaction Stats */}
@@ -137,14 +180,16 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
               <MdFavorite size={16} />
               <span className="text-small">{getReactionCount()}</span>
             </div>
-            <div className="flex items-center gap-1 text-foreground-500">
-              <MdMessage size={16} />
-              <span className="text-small">{getCommentCount()}</span>
-            </div>
+            {getImageCount() > 0 && (
+              <div className="flex items-center gap-1 text-foreground-500">
+                <MdImage size={16} />
+                <span className="text-small">{getImageCount()}</span>
+              </div>
+            )}
           </div>
 
           <Button size="sm" variant="flat" onPress={handleOpenMemory}>
-            {t("memories.viewThread")}
+            {t("memories.viewMemory")}
           </Button>
         </div>
       </CardBody>

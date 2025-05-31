@@ -1,14 +1,16 @@
-import type { MemoryDto } from "@/types/memory";
+import type { ImageDto } from "@/types/memory";
 
-import { Image } from "@heroui/image";
+import MemoryImage from "@/components/MemoryImage";
 
 interface MemoryCardImageGridProps {
-  images: MemoryDto["images"];
+  images: ImageDto[];
+  postId: string;
 }
 
 // Reusable caption overlay component
 interface ImageWithCaptionProps {
-  image: MemoryDto["images"][0];
+  image: ImageDto;
+  postId: string;
   alt: string;
   className?: string;
   captionSize?: "sm" | "xs";
@@ -19,6 +21,7 @@ function ImageWithCaption({
   alt,
   className = "",
   captionSize = "sm",
+  postId,
 }: ImageWithCaptionProps) {
   const captionTextClass = captionSize === "sm" ? "text-sm" : "text-xs";
   const captionPadding = captionSize === "sm" ? "p-3" : "p-2";
@@ -26,17 +29,16 @@ function ImageWithCaption({
   return (
     <div className={className}>
       <div className="group relative inline-block overflow-hidden rounded-lg">
-        <Image
+        <MemoryImage
           alt={alt}
           className="block transition-transform duration-300 group-hover:scale-105"
-          src={image.url}
+          fileId={image.fileId}
+          postId={postId}
         />
         <div
           className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent ${captionPadding} opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-10`}
         >
-          <p className={`${captionTextClass} text-white`}>
-            {image.caption || alt}
-          </p>
+          <p className={`${captionTextClass} text-white`}>{alt}</p>
         </div>
       </div>
     </div>
@@ -45,6 +47,7 @@ function ImageWithCaption({
 
 export default function MemoryCardImageGrid({
   images,
+  postId,
 }: MemoryCardImageGridProps) {
   if (images.length === 0) {
     return null;
@@ -55,9 +58,10 @@ export default function MemoryCardImageGrid({
     return (
       <div className="mb-4">
         <ImageWithCaption
-          alt={images[0].caption || "Memory image"}
+          alt="Memory image"
           className="aspect-video"
           image={images[0]}
+          postId={postId}
         />
       </div>
     );
@@ -74,9 +78,10 @@ export default function MemoryCardImageGrid({
       <div className="md:hidden space-y-3">
         {/* Main image on mobile */}
         <ImageWithCaption
-          alt={mainImage.caption || "Main memory image"}
+          alt="Main memory image"
           className="aspect-video"
           image={mainImage}
+          postId={postId}
         />
 
         {/* Additional images in 2-column grid on mobile */}
@@ -84,11 +89,12 @@ export default function MemoryCardImageGrid({
           <div className="grid grid-cols-2 gap-3">
             {additionalImages.slice(0, 5).map((image, index) => (
               <ImageWithCaption
-                key={image.id}
-                alt={image.caption || `Memory image ${index + 2}`}
+                key={image.fileId}
+                alt={`Memory image ${index + 2}`}
                 captionSize="xs"
                 className="aspect-square"
                 image={image}
+                postId={postId}
               />
             ))}
 
@@ -114,10 +120,11 @@ export default function MemoryCardImageGrid({
           <div className="grid grid-cols-2 gap-4">
             {images.map((image, index) => (
               <ImageWithCaption
-                key={image.id}
-                alt={image.caption || `Memory image ${index + 1}`}
+                key={image.fileId}
+                alt={`Memory image ${index + 1}`}
                 className="aspect-video"
                 image={image}
+                postId={postId}
               />
             ))}
           </div>
@@ -125,17 +132,19 @@ export default function MemoryCardImageGrid({
           // 3 images: main large + 2 smaller on the side
           <div className="grid grid-cols-3 gap-3 auto-rows-[200px]">
             <ImageWithCaption
-              alt={mainImage.caption || "Main memory image"}
+              alt="Main memory image"
               className="col-span-2 row-span-2"
               image={mainImage}
+              postId={postId}
             />
             {additionalImages.slice(0, 2).map((image, index) => (
               <ImageWithCaption
-                key={image.id}
-                alt={image.caption || `Memory image ${index + 2}`}
+                key={image.fileId}
+                alt={`Memory image ${index + 2}`}
                 captionSize="xs"
                 className="aspect-square"
                 image={image}
+                postId={postId}
               />
             ))}
           </div>
@@ -143,18 +152,20 @@ export default function MemoryCardImageGrid({
           // 4+ images: main large + grid on the side
           <div className="grid grid-cols-4 gap-4 auto-rows-[140px]">
             <ImageWithCaption
-              alt={mainImage.caption || "Main memory image"}
+              alt="Main memory image"
               className="col-span-2 row-span-2"
               image={mainImage}
+              postId={postId}
             />
 
             {additionalImages.slice(0, 4).map((image, index) => (
               <ImageWithCaption
-                key={image.id}
-                alt={image.caption || `Memory image ${index + 2}`}
+                key={image.fileId}
+                alt={`Memory image ${index + 2}`}
                 captionSize="xs"
                 className="aspect-square"
                 image={image}
+                postId={postId}
               />
             ))}
 

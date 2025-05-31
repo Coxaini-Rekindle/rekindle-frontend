@@ -1,7 +1,7 @@
 import type { GroupDto } from "@/types/group";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
 import { Spinner } from "@heroui/spinner";
@@ -16,6 +16,7 @@ import { useUserGroups } from "@/hooks/useGroups";
 
 export default function Groups() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedGroup, setSelectedGroup] = useState<GroupDto | null>(null);
@@ -37,9 +38,7 @@ export default function Groups() {
   }, [searchParams, onOpen, setSearchParams]);
 
   const handleViewGroup = (groupId: string) => {
-    // TODO: Navigate to group details page
-    // eslint-disable-next-line no-console
-    console.log("View group:", groupId);
+    navigate(`/groups/${groupId}/memories`);
   };
 
   const handleEditGroup = (group: GroupDto) => {

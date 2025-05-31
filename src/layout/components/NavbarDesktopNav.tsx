@@ -11,7 +11,7 @@ import {
 } from "@heroui/dropdown";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
-import { MdAdd, MdGroup, MdHome, MdPhotoLibrary } from "react-icons/md";
+import { MdAdd, MdGroup, MdHome } from "react-icons/md";
 
 import { useUserGroups } from "@/hooks/useGroups";
 
@@ -27,11 +27,7 @@ const NavbarDesktopNav: React.FC = () => {
 
   const recentGroups = groups.slice(0, 5); // Show only first 5 groups
 
-  const menuItems = [
-    { label: t("navbar.home"), path: "/", icon: MdHome },
-    { label: t("navbar.groups"), path: "/groups", icon: MdGroup },
-    { label: t("navbar.memories"), path: "/memories", icon: MdPhotoLibrary },
-  ];
+  const menuItems = [{ label: t("navbar.home"), path: "/", icon: MdHome }];
 
   return (
     <NavbarContent className="hidden sm:flex gap-4" justify="center">
@@ -49,55 +45,93 @@ const NavbarDesktopNav: React.FC = () => {
         </NavbarItem>
       ))}
 
-      {/* Groups Dropdown */}
+      {/* Groups Dropdown - Enhanced */}
       {groups.length > 0 && (
         <NavbarItem>
           <Dropdown>
             <DropdownTrigger>
               <Button
-                className="font-medium"
+                className="font-medium text-foreground"
                 endContent={
-                  <Chip size="sm" variant="flat">
+                  <Chip color="primary" size="sm" variant="flat">
                     {groups.length}
                   </Chip>
                 }
+                startContent={<MdGroup size={18} />}
                 variant="light"
               >
-                Quick Groups
+                {t("navbar.myGroups")}
               </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label={t("navbar.groupShortcuts")}>
+            <DropdownMenu
+              aria-label={t("navbar.groupShortcuts")}
+              className="w-64"
+            >
               <DropdownSection showDivider title={t("navbar.recentGroups")}>
                 {recentGroups.map((group) => (
                   <DropdownItem
                     key={group.id}
-                    startContent={<MdGroup size={16} />}
-                    onPress={() => navigate(`/groups`)} // TODO: Navigate to specific group
+                    className="py-2"
+                    startContent={
+                      <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                        <MdGroup className="text-primary" size={16} />
+                      </div>
+                    }
+                    onPress={() => navigate(`/groups/${group.id}/memories`)}
                   >
                     <div className="flex flex-col">
-                      <span className="font-medium">{group.name}</span>
+                      <span className="font-medium text-foreground">
+                        {group.name}
+                      </span>
                       <span className="text-xs text-foreground-500">
                         {group.memberCount}
-                        {t("navbar.member", { count: group.memberCount })}
+                        {t("navbar.member", {
+                          count: group.memberCount,
+                        })}{" "}
+                        • View Memories
                       </span>
                     </div>
                   </DropdownItem>
                 ))}
               </DropdownSection>
-              <DropdownSection>
+              <DropdownSection title={t("navbar.actions")}>
                 <DropdownItem
                   key="create-group"
-                  startContent={<MdAdd size={16} />}
+                  className="py-2"
+                  startContent={
+                    <div className="flex items-center justify-center w-8 h-8 bg-success/10 rounded-full">
+                      <MdAdd className="text-success" size={16} />
+                    </div>
+                  }
                   onPress={() => navigate("/groups?create=true")}
                 >
-                  {t("navbar.createNewGroup")}
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {t("navbar.createNewGroup")}
+                    </span>
+                    <span className="text-xs text-foreground-500">
+                      Start a new memory group
+                    </span>
+                  </div>
                 </DropdownItem>
                 <DropdownItem
                   key="view-all-groups"
-                  startContent={<MdGroup size={16} />}
+                  className="py-2"
+                  startContent={
+                    <div className="flex items-center justify-center w-8 h-8 bg-secondary/10 rounded-full">
+                      <MdGroup className="text-secondary" size={16} />
+                    </div>
+                  }
                   onPress={() => navigate("/groups")}
                 >
-                  {t("navbar.viewAllGroups")}
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {t("navbar.viewAllGroups")}
+                    </span>
+                    <span className="text-xs text-foreground-500">
+                      Manage all your groups
+                    </span>
+                  </div>
                 </DropdownItem>
               </DropdownSection>
             </DropdownMenu>

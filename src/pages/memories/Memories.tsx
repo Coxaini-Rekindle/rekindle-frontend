@@ -1,19 +1,47 @@
-import type { MemoryDto } from "@/types/memory";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { MdAdd, MdSearch } from "react-icons/md";
+import { Spinner } from "@heroui/spinner";
+import { MdAdd, MdSearch, MdArrowBack } from "react-icons/md";
 
 import MemoryCard from "./components/MemoryCard";
-import { mockMemories } from "./mockData";
+import CreateMemoryModal from "./components/CreateMemoryModal";
+
+import { useMemories } from "@/hooks/useMemories";
+import { useGroupDetails, useGroupMembers } from "@/hooks/useGroups";
 
 export default function Memories() {
   const { t } = useTranslation();
-  const [memories] = useState<MemoryDto[]>(mockMemories);
+  const navigate = useNavigate();
+  const { groupId } = useParams<{ groupId: string }>();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  // Get memories using the new hook
+  const {
+    memories,
+    isLoading,
+    isLoadingMore,
+    error,
+    hasMore,
+    fetchMemories,
+    loadMoreMemories,
+  } = useMemories(groupId);
+
+  // Get group details if we're in a group context
+  const { data: groupData } = useGroupDetails(groupId || "", !!groupId);
+  const { data: groupMembers } = useGroupMembers(groupId || "", !!groupId);
+
+  // Load memories on component mount or when groupId changes
+  useEffect(() => {
+    if (groupId) {
+      fetchMemories(groupId, 20, true);
+    }
+  }, [groupId, fetchMemories]);
+
+  // Filter memories based on search query
   const filteredMemories = memories.filter((memory) => {
     if (!searchQuery) return true;
 
@@ -21,33 +49,80 @@ export default function Memories() {
 
     return (
       memory.description?.toLowerCase().includes(searchLower) ||
-      memory.locations.some((location) =>
-        location.name?.toLowerCase().includes(searchLower),
-      ) ||
-      memory.people.some((person) =>
-        person.name.toLowerCase().includes(searchLower),
-      ) ||
-      memory.images.some(
-        (image) =>
-          image.caption?.toLowerCase().includes(searchLower) ||
-          image.location?.name?.toLowerCase().includes(searchLower),
-      )
+      memory.title?.toLowerCase().includes(searchLower) ||
+      memory.mainPost?.content?.toLowerCase().includes(searchLower)
     );
   });
 
-  const sortedMemories = filteredMemories.sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
+  const handleLoadMore = () => {
+    if (groupId && hasMore && !isLoadingMore) {
+      loadMoreMemories(groupId);
+    }
+  };
+
+  const handleBackToGroups = () => {
+    navigate("/groups");
+  };
+
+  const handleCreateMemory = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  // Loading state
+  if (isLoading && memories.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="text-center py-12 bg-content1 border border-divider rounded-lg">
+        <p className="text-danger mb-4">{error}</p>
+        <Button
+          color="primary"
+          onPress={() =>
+            groupId
+              ? fetchMemories(groupId, 20, true)
+              : window.location.reload()
+          }
+        >
+          {t("memories.retry")}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-6">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {t("memories.title")}
-          </h1>
-          <p className="mt-1 text-foreground-500">{t("memories.subtitle")}</p>
+          <div className="flex items-center gap-3 mb-2">
+            {groupId && (
+              <Button
+                isIconOnly
+                size="sm"
+                variant="flat"
+                onPress={handleBackToGroups}
+              >
+                <MdArrowBack size={20} />
+              </Button>
+            )}
+            <h1 className="text-3xl font-bold text-foreground">
+              {groupId
+                ? t("memories.groupMemories", {
+                    groupName: groupData?.name || "Group",
+                  })
+                : t("memories.title")}
+            </h1>
+          </div>
+          <p className="mt-1 text-foreground-500">
+            {groupId ? t("memories.groupSubtitle") : t("memories.subtitle")}
+          </p>
         </div>
 
         <div className="flex gap-2">
@@ -55,6 +130,7 @@ export default function Memories() {
             className="hidden sm:flex"
             color="primary"
             startContent={<MdAdd size={20} />}
+            onPress={handleCreateMemory}
           >
             {t("memories.createMemory")}
           </Button>
@@ -83,66 +159,68 @@ export default function Memories() {
         className="mb-6 w-full sm:hidden"
         color="primary"
         startContent={<MdAdd size={20} />}
+        onPress={handleCreateMemory}
       >
         {t("memories.createMemory")}
       </Button>
 
       {/* Stats */}
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-lg bg-content1 p-4 text-center">
-          <div className="text-2xl font-bold text-primary">
-            {memories.length}
+      {groupId && (
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-lg bg-content1 p-4 text-center">
+            <div className="text-2xl font-bold text-primary">
+              {memories.length}
+            </div>
+            <div className="text-small text-foreground-500">
+              {t("memories.stats.totalMemories")}
+            </div>
           </div>
-          <div className="text-small text-foreground-500">
-            {t("memories.stats.totalMemories")}
+
+          <div className="rounded-lg bg-content1 p-4 text-center">
+            <div className="text-2xl font-bold text-secondary">
+              {groupMembers?.length || 0}
+            </div>
+            <div className="text-small text-foreground-500">
+              {t("memories.stats.totalPeople")}
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-content1 p-4 text-center">
+            <div className="text-2xl font-bold text-success">
+              {memories.reduce(
+                (total, memory) =>
+                  total + (memory.mainPost?.reactionSummary?.totalCount || 0),
+                0,
+              )}
+            </div>
+            <div className="text-small text-foreground-500">
+              {t("memories.stats.totalReactions")}
+            </div>
           </div>
         </div>
-
-        <div className="rounded-lg bg-content1 p-4 text-center">
-          <div className="text-2xl font-bold text-secondary">
-            {
-              new Set(
-                memories.flatMap((memory) => memory.people.map((p) => p.id)),
-              ).size
-            }
-          </div>
-          <div className="text-small text-foreground-500">
-            {t("memories.stats.totalPeople")}
-          </div>
-        </div>
-
-        <div className="rounded-lg bg-content1 p-4 text-center">
-          <div className="text-2xl font-bold text-success">
-            {
-              new Set(
-                memories.flatMap((memory) => {
-                  const locations: string[] = [];
-
-                  memory.locations.forEach((location) => {
-                    if (location.name) locations.push(location.name);
-                  });
-
-                  memory.images.forEach((img) => {
-                    if (img.location?.name) locations.push(img.location.name);
-                  });
-
-                  return locations;
-                }),
-              ).size
-            }
-          </div>
-          <div className="text-small text-foreground-500">
-            {t("memories.stats.totalLocations")}
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Memory Feed */}
-      {sortedMemories.length > 0 ? (
+      {filteredMemories.length > 0 ? (
         <div className="space-y-6">
-          {sortedMemories.map((memory) => (
+          {filteredMemories.map((memory) => (
             <MemoryCard key={memory.id} memory={memory} />
           ))}
+
+          {/* Load More Button */}
+          {hasMore && (
+            <div className="flex justify-center pt-6">
+              <Button
+                isLoading={isLoadingMore}
+                variant="flat"
+                onPress={handleLoadMore}
+              >
+                {isLoadingMore
+                  ? t("memories.loadingMore")
+                  : t("memories.loadMore")}
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="py-12 text-center">
@@ -156,12 +234,25 @@ export default function Memories() {
               ? t("memories.noMemories.searchSubtitle")
               : t("memories.noMemories.subtitle")}
           </p>
-          {!searchQuery && (
-            <Button color="primary" startContent={<MdAdd size={20} />}>
+          {!searchQuery && groupId && (
+            <Button
+              color="primary"
+              startContent={<MdAdd size={20} />}
+              onPress={handleCreateMemory}
+            >
               {t("memories.createFirstMemory")}
             </Button>
           )}
         </div>
+      )}
+
+      {/* Create Memory Modal */}
+      {groupId && (
+        <CreateMemoryModal
+          groupId={groupId}
+          isOpen={isCreateModalOpen}
+          onOpenChange={setIsCreateModalOpen}
+        />
       )}
     </div>
   );

@@ -1,16 +1,14 @@
-import type { MemoryDto, MemoryCommentDto } from "@/types/memory";
-
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@heroui/button";
+import { Spinner } from "@heroui/spinner";
+import { MdArrowBack } from "react-icons/md";
 
-import { mockMemories } from "./mockData";
-import {
-  MemoryHeader,
-  MemoryContent,
-  AddPostSection,
-  CommentsSection,
-} from "./components";
+import MemoryCard from "./components/MemoryCard";
+
+import { MemoryDto } from "@/types/memory";
+import { memoriesApi } from "@/api/memoriesApi";
 
 export default function MemoryDetail() {
   const { t } = useTranslation();
@@ -18,122 +16,104 @@ export default function MemoryDetail() {
   const navigate = useNavigate();
 
   const [memory, setMemory] = useState<MemoryDto | null>(null);
-  const [newComment, setNewComment] = useState("");
-  const [newPost, setNewPost] = useState("");
-  const [isAddingPost, setIsAddingPost] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Find memory by ID from mock data
-    const foundMemory = mockMemories.find((m) => m.id === memoryId);
+    const fetchMemory = async () => {
+      if (!memoryId) {
+        navigate("/groups");
 
-    if (foundMemory) {
-      setMemory(foundMemory);
-    } else {
-      // Memory not found, redirect back
-      navigate("/memories");
-    }
-  }, [memoryId, navigate]);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        const memoryData = await memoriesApi.getMemoryById(memoryId);
+
+        setMemory(memoryData);
+      } catch {
+        setError(t("memories.error"));
+        setTimeout(() => navigate("/groups"), 2000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMemory();
+  }, [memoryId, navigate, t]);
 
   const handleBack = () => {
-    navigate("/memories");
-  };
-
-  const handleAddComment = () => {
-    if (!newComment.trim() || !memory) return;
-
-    const comment: MemoryCommentDto = {
-      id: `comment-${Date.now()}`,
-      authorId: "current-user",
-      authorName: "You",
-      authorAvatar: "",
-      content: newComment.trim(),
-      createdAt: new Date().toISOString(),
-    };
-
-    setMemory({
-      ...memory,
-      comments: [...memory.comments, comment],
-    });
-
-    setNewComment("");
-  };
-
-  const handleAddPost = () => {
-    if (!newPost.trim()) return;
-
-    // For now, we'll add this as a comment since we don't have a separate posts system
-    const post: MemoryCommentDto = {
-      id: `post-${Date.now()}`,
-      authorId: "current-user",
-      authorName: "You",
-      authorAvatar: "",
-      content: newPost.trim(),
-      createdAt: new Date().toISOString(),
-    };
-
-    if (memory) {
-      setMemory({
-        ...memory,
-        comments: [...memory.comments, post],
-      });
+    // Try to extract group id from memory if available
+    if (memory && memory.groupId) {
+      navigate(`/groups/${memory.groupId}/memories`);
+    } else {
+      // If no group id is available, go to groups page
+      navigate("/groups");
     }
-
-    setNewPost("");
-    setIsAddingPost(false);
   };
 
-  if (!memory) {
+  if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <p className="text-lg text-foreground-400">{t("memories.loading")}</p>
-        </div>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Spinner size="lg" />
+        <span className="ml-2">{t("memories.loading")}</span>
       </div>
     );
   }
 
-  const getAllLocations = () => {
-    const locations = new Set<string>();
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-danger mb-4">{error}</p>
+        <Button variant="bordered" onPress={handleBack}>
+          {t("common.goBack")}
+        </Button>
+      </div>
+    );
+  }
 
-    // Add memory-level locations
-    memory.locations.forEach((location) => {
-      if (location.name) {
-        locations.add(location.name);
-      }
-    });
-
-    // Add image-level locations
-    memory.images.forEach((image) => {
-      if (image.location?.name) {
-        locations.add(image.location.name);
-      }
-    });
-
-    return Array.from(locations);
-  };
-
-  const locations = getAllLocations();
+  if (!memory) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-foreground-500 mb-4">
+          {t("memories.noMemories.title")}
+        </p>
+        <Button variant="bordered" onPress={handleBack}>
+          {t("common.goBack")}
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-6">
-      <MemoryHeader onBack={handleBack} />
+    <div className="container mx-auto px-4 py-6 max-w-4xl">
+      {/* Header with back button */}
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          isIconOnly
+          aria-label={t("common.goBack")}
+          variant="light"
+          onPress={handleBack}
+        >
+          <MdArrowBack className="text-xl" />
+        </Button>
+        <h1 className="text-2xl font-bold">{t("memories.memoryDetail")}</h1>
+      </div>
 
-      <MemoryContent locations={locations} memory={memory} />
+      {/* Memory content */}
+      <div className="space-y-6">
+        <MemoryCard memory={memory} />
 
-      <AddPostSection
-        isAddingPost={isAddingPost}
-        newPost={newPost}
-        onPostChange={setNewPost}
-        onSubmitPost={handleAddPost}
-        onToggleAddingPost={setIsAddingPost}
-      />
-
-      <CommentsSection
-        memory={memory}
-        newComment={newComment}
-        onCommentChange={setNewComment}
-        onSubmitComment={handleAddComment}
-      />
+        {/* Future: Add comments/posts section here when API supports it */}
+        <div className="bg-content2 rounded-lg p-6">
+          <p className="text-foreground-500 text-center">
+            {t("memories.commentsTitle")} - {t("common.comingSoon")}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

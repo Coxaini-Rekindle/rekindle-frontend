@@ -14,11 +14,13 @@ export default function MemoryStats({ memory }: MemoryStatsProps) {
     <div className="flex items-center gap-4 text-foreground-500">
       <div className="flex items-center gap-1">
         <MdFavorite size={16} />
-        <span className="text-small">{memory.reactions?.length || 0}</span>
+        <span className="text-small">
+          {memory.mainPost?.reactionSummary?.totalCount || 0}
+        </span>
       </div>
       <div className="flex items-center gap-1">
         <span className="text-small">
-          {t("memories.comments", { count: memory.comments.length })}
+          {t("memories.comments", { count: 0 })}
         </span>
       </div>
     </div>

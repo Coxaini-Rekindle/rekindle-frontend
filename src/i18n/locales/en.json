@@ -239,20 +239,28 @@
     "error": "Error",
     "success": "Success",
     "close": "Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "goBack": "Go Back",
+    "comingSoon": "Coming Soon"
   },
   "memories": {
     "title": "Memories",
     "subtitle": "Relive your favorite moments with friends and family",
+    "groupMemories": "{{groupName}} Memories",
+    "groupSubtitle": "Shared memories from your group",
     "createMemory": "Create Memory",
     "createFirstMemory": "Create Your First Memory",
     "searchPlaceholder": "Search memories, locations, or people...",
     "sortBy": "Sort by",
     "viewThread": "View Thread",
+    "viewMemory": "View Memory",
     "comments": "Comments",
     "addComment": "Add a comment...",
     "memoryDetail": "Memory Details",
     "loading": "Loading memory...",
+    "loadMore": "Load More",
+    "loadingMore": "Loading more...",
+    "retry": "Retry",
     "addPost": "Add a post",
     "postPlaceholder": "Share your thoughts about this memory...",
     "post": "Post",
@@ -276,12 +284,32 @@
       "totalMemories": "Total Memories",
       "totalPhotos": "Total Photos",
       "totalPeople": "Total People",
-      "totalLocations": "Total Locations"
+      "totalLocations": "Total Locations",
+      "totalReactions": "Total Reactions"
     },
     "noMemories": {
       "title": "No memories found",
       "subtitle": "Start creating memories to see them here",
       "searchSubtitle": "Try adjusting your search terms"
+    },
+    "createModal": {
+      "title": "Create New Memory",
+      "titleLabel": "Memory Title",
+      "titlePlaceholder": "Give your memory a title...",
+      "descriptionLabel": "Description (Optional)",
+      "descriptionPlaceholder": "Describe this memory...",
+      "contentLabel": "Share Your Thoughts",
+      "contentPlaceholder": "Tell the story behind this memory...",
+      "imagesLabel": "Photos",
+      "participantsLabel": "Tag Participants",
+      "participantsPlaceholder": "Enter user ID or username",
+      "participantsHint": "Add people who were part of this memory",
+      "cancelButton": "Cancel",
+      "createButton": "Create Memory",
+      "validation": {
+        "titleRequired": "Memory title is required",
+        "contentRequired": "Please share some thoughts about this memory"
+      }
     }
   },
   "navbar": {
@@ -304,6 +332,7 @@
     "systemSettings": "System Settings",
     "dangerZone": "Danger Zone",
     "logout": "Logout",
-    "logoutDescription": "Log out of your account"
+    "logoutDescription": "Log out of your account",
+    "myGroups": "My Groups"
   }
 }

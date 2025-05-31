@@ -6,3 +6,4 @@ export { default as MemoryImageGrid } from "./MemoryImageGrid";
 export { default as MemoryStats } from "./MemoryStats";
 export { default as AddPostSection } from "./AddPostSection";
 export { default as CommentsSection } from "./CommentsSection";
+export { default as CreateMemoryModal } from "./CreateMemoryModal";

@@ -16,28 +16,12 @@ interface CommentsSectionProps {
 }
 
 export default function CommentsSection({
-  memory,
+  memory: _memory,
   newComment,
   onCommentChange,
   onSubmitComment,
 }: CommentsSectionProps) {
   const { t } = useTranslation();
-
-  const formatCommentDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMins < 1) return t("memories.justNow");
-    if (diffMins < 60) return t("memories.minutesAgo", { count: diffMins });
-    if (diffHours < 24) return t("memories.hoursAgo", { count: diffHours });
-    if (diffDays < 7) return t("memories.daysAgo", { count: diffDays });
-
-    return date.toLocaleDateString();
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -53,39 +37,14 @@ export default function CommentsSection({
       </CardHeader>
       <Divider />
       <CardBody>
-        {/* Comments List */}
+        {/* Comments List - Legacy component, comments now handled differently in new API */}
         <div className="space-y-4">
-          {memory.comments.map((comment, index) => (
-            <div key={comment.id}>
-              <div className="flex gap-3">
-                <Avatar
-                  name={comment.authorName}
-                  size="sm"
-                  src={comment.authorAvatar}
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">
-                      {comment.authorName}
-                    </span>
-                    <span className="text-small text-foreground-400">
-                      {formatCommentDate(comment.createdAt)}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-foreground-700">{comment.content}</p>
-                </div>
-              </div>
-              {index < memory.comments.length - 1 && (
-                <Divider className="mt-4" />
-              )}
-            </div>
-          ))}
-
-          {memory.comments.length === 0 && (
-            <div className="py-8 text-center">
-              <p className="text-foreground-400">{t("memories.noComments")}</p>
-            </div>
-          )}
+          <div className="py-8 text-center">
+            <p className="text-foreground-400">{t("memories.noComments")}</p>
+            <p className="text-xs text-foreground-300 mt-2">
+              {t("memories.commentsComingSoon", "Comments feature coming soon")}
+            </p>
+          </div>
         </div>
 
         {/* Add Comment */}

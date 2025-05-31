@@ -23,7 +23,10 @@ export default function MemoryContent({
 
       <CardBody className="pt-0">
         {/* Images Grid */}
-        <MemoryImageGrid images={memory.images} />
+        <MemoryImageGrid
+          images={memory.mainPost?.images || []}
+          postId={memory.mainPostId}
+        />
 
         {/* Description */}
         {memory.description && (

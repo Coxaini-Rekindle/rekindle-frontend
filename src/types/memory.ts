@@ -1,23 +1,80 @@
-// Memory types for the Rekindle app
+// Memory types for the Rekindle app - aligned with API schema
 
 export interface MemoryDto {
   id: string;
+  groupId: string;
   title: string;
-  description?: string;
+  description: string;
   createdAt: string;
-  updatedAt: string;
-  authorId: string;
-  authorName: string;
-  authorAvatar?: string;
-  images: MemoryImageDto[];
-  people: MemoryPersonDto[];
-  comments: MemoryCommentDto[];
-  reactions: MemoryReactionDto[];
-  isPublic: boolean;
-  groupId?: string;
-  locations: MemoryLocationDto[];
+  creatorUserId: string;
+  participantsIds: string[];
+  mainPostId: string;
+  mainPost: PostDto | null;
 }
 
+export interface PostDto {
+  id: string;
+  memoryId: string;
+  content: string;
+  images: ImageDto[];
+  createdAt: string;
+  creatorUserId: string;
+  reactions: ReactionDto[];
+  reactionSummary: ReactionSummaryDto;
+}
+
+export interface ImageDto {
+  fileId: string;
+  participantIds: string[];
+}
+
+export interface ReactionDto {
+  userId: string;
+  type: ReactionTypeDto;
+  createdAt: string;
+}
+
+export interface ReactionSummaryDto {
+  totalCount: number;
+  reactionCounts: Record<string, number>;
+  userReactions: ReactionTypeDto[];
+}
+
+export enum ReactionTypeDto {
+  Love = "Love",
+  Laugh = "Laugh",
+  Wow = "Wow",
+  Nostalgic = "Nostalgic",
+  Grateful = "Grateful",
+  Celebrate = "Celebrate",
+  Support = "Support",
+  Memories = "Memories",
+  Family = "Family",
+  Friendship = "Friendship",
+  Journey = "Journey",
+  Milestone = "Milestone",
+  Peaceful = "Peaceful",
+  Adventure = "Adventure",
+  Warm = "Warm",
+}
+
+export interface CursorPaginationResponse<T> {
+  items: T[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+// Request types
+export interface CreateMemoryFormRequest {
+  title: string;
+  description: string;
+  content: string;
+  images?: File[];
+  participantIds?: string;
+  existingFileIds?: string;
+}
+
+// Legacy types (keeping for compatibility with existing components)
 export interface MemoryImageDto {
   id: string;
   url: string;

@@ -45,7 +45,7 @@ function App() {
             </AppLayout>
           </ProtectedRoute>
         }
-        path="/memories"
+        path="/groups/:groupId/memories"
       />
 
       <Route

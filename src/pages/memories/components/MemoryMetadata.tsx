@@ -44,13 +44,18 @@ export default function MemoryMetadata({
         </div>
       )}
 
-      {memory.people.length > 0 && (
+      {memory.participantsIds.length > 0 && (
         <div className="flex items-center gap-2">
           <MdPeople className="text-foreground-500" size={16} />
           <div className="flex flex-wrap gap-2">
-            {memory.people.map((person) => (
-              <Chip key={person.id} color="secondary" size="sm" variant="flat">
-                {person.name}
+            {memory.participantsIds.map((participantId) => (
+              <Chip
+                key={participantId}
+                color="secondary"
+                size="sm"
+                variant="flat"
+              >
+                {participantId}
               </Chip>
             ))}
           </div>
