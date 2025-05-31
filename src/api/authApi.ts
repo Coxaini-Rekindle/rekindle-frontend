@@ -1,4 +1,5 @@
 import apiClient from "./apiClient";
+import { API_PREFIXES, buildEndpoint } from "./apiConfig";
 
 // Define TypeScript interfaces for API requests and responses
 export interface LoginRequest {
@@ -27,7 +28,7 @@ export interface AuthenticationResult {
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<AuthenticationResult> => {
     const response = await apiClient.post<AuthenticationResult>(
-      "/auth/login",
+      buildEndpoint(API_PREFIXES.USER_GROUPS, "/auth/login"),
       credentials,
     );
 
@@ -38,7 +39,7 @@ export const authApi = {
     userData: RegisterRequest,
   ): Promise<AuthenticationResult> => {
     const response = await apiClient.post<AuthenticationResult>(
-      "/auth/register",
+      buildEndpoint(API_PREFIXES.USER_GROUPS, "/auth/register"),
       userData,
     );
 
@@ -49,7 +50,7 @@ export const authApi = {
     data: RefreshTokenRequest,
   ): Promise<AuthenticationResult> => {
     const response = await apiClient.post<AuthenticationResult>(
-      "/auth/refresh",
+      buildEndpoint(API_PREFIXES.USER_GROUPS, "/auth/refresh"),
       data,
     );
 

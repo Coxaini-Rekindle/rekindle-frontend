@@ -10,26 +10,34 @@ import type {
 } from "@/types/group";
 
 import apiClient from "./apiClient";
+import { API_PREFIXES, buildEndpoint } from "./apiConfig";
 
 // Groups API
 export const groupsApi = {
   // Get all user groups
   getUserGroups: async (): Promise<GroupDto[]> => {
-    const response = await apiClient.get("/groups");
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, "/groups"),
+    );
 
     return response.data;
   },
 
   // Get specific group details
   getGroupDetails: async (groupId: string): Promise<GroupDto> => {
-    const response = await apiClient.get(`/groups/${groupId}`);
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/${groupId}`),
+    );
 
     return response.data;
   },
 
   // Create a new group
   createGroup: async (groupData: CreateGroupRequest): Promise<GroupDto> => {
-    const response = await apiClient.post("/groups", groupData);
+    const response = await apiClient.post(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, "/groups"),
+      groupData,
+    );
 
     return response.data;
   },
@@ -39,21 +47,28 @@ export const groupsApi = {
     groupId: string,
     groupData: UpdateGroupRequest,
   ): Promise<GroupDto> => {
-    const response = await apiClient.put(`/groups/${groupId}`, groupData);
+    const response = await apiClient.put(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/${groupId}`),
+      groupData,
+    );
 
     return response.data;
   },
 
   // Get group members
   getGroupMembers: async (groupId: string): Promise<GroupMemberDto[]> => {
-    const response = await apiClient.get(`/groups/${groupId}/members`);
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/${groupId}/members`),
+    );
 
     return response.data;
   },
 
   // Delete a group (only owners can delete)
   deleteGroup: async (groupId: string): Promise<void> => {
-    await apiClient.delete(`/groups/${groupId}`);
+    await apiClient.delete(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/${groupId}`),
+    );
   },
 
   // Remove user from group
@@ -61,7 +76,12 @@ export const groupsApi = {
     groupId: string,
     userIdToRemove: string,
   ): Promise<void> => {
-    await apiClient.delete(`/groups/${groupId}/members/${userIdToRemove}`);
+    await apiClient.delete(
+      buildEndpoint(
+        API_PREFIXES.USER_GROUPS,
+        `/groups/${groupId}/members/${userIdToRemove}`,
+      ),
+    );
   },
 };
 
@@ -73,7 +93,7 @@ export const groupInvitationsApi = {
     inviteData: InviteToGroupRequest,
   ): Promise<GroupInviteDto> => {
     const response = await apiClient.post(
-      `/groups/${groupId}/invites`,
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/${groupId}/invites`),
       inviteData,
     );
 
@@ -86,7 +106,10 @@ export const groupInvitationsApi = {
     linkData: CreateInviteLinkRequest = {},
   ): Promise<InviteLinkResponse> => {
     const response = await apiClient.post(
-      `/groups/${groupId}/invites/link`,
+      buildEndpoint(
+        API_PREFIXES.USER_GROUPS,
+        `/groups/${groupId}/invites/link`,
+      ),
       linkData,
     );
 
@@ -95,35 +118,48 @@ export const groupInvitationsApi = {
 
   // Get user invitations
   getUserInvitations: async (): Promise<GroupInviteDto[]> => {
-    const response = await apiClient.get("/invitations");
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, "/invitations"),
+    );
 
     return response.data;
   },
 
   // Accept group invitation
   acceptInvitation: async (inviteId: string): Promise<GroupDto> => {
-    const response = await apiClient.post(`/invitations/${inviteId}/accept`);
+    const response = await apiClient.post(
+      buildEndpoint(
+        API_PREFIXES.USER_GROUPS,
+        `/invitations/${inviteId}/accept`,
+      ),
+    );
 
     return response.data;
   },
 
   // Join group with link
   joinGroupWithLink: async (token: string): Promise<GroupDto> => {
-    const response = await apiClient.post(`/groups/join/${token}`);
+    const response = await apiClient.post(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/join/${token}`),
+    );
 
     return response.data;
   },
 
   // Get group info by invite ID
   getGroupByInviteId: async (inviteId: string): Promise<GroupDto> => {
-    const response = await apiClient.get(`/invitations/${inviteId}/group`);
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/invitations/${inviteId}/group`),
+    );
 
     return response.data;
   },
 
   // Get group info by join token
   getGroupByJoinToken: async (token: string): Promise<GroupDto> => {
-    const response = await apiClient.get(`/groups/join/${token}/info`);
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.USER_GROUPS, `/groups/join/${token}/info`),
+    );
 
     return response.data;
   },

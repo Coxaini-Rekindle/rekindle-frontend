@@ -1,6 +1,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import { API_PREFIXES, buildEndpoint } from "./apiConfig";
+
 // Create an Axios instance with default config
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5049", // Default to localhost:5049 if not specified
@@ -43,7 +45,7 @@ apiClient.interceptors.response.use(
 
         if (refreshToken) {
           const response = await axios.post(
-            `${apiClient.defaults.baseURL}/auth/refresh`,
+            `${apiClient.defaults.baseURL}${buildEndpoint(API_PREFIXES.USER_GROUPS, "/auth/refresh")}`,
             { refreshToken },
           );
 
