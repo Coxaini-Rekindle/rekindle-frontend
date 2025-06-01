@@ -142,8 +142,6 @@ export default function MemoryDetail() {
 
       {/* Memory content */}
       <div className="space-y-6">
-        <MemoryCard memory={memory} />
-
         {/* Add Post section */}
         <AddPostSection
           isAddingPost={isAddingPost}

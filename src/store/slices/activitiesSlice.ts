@@ -205,6 +205,57 @@ export const removeReaction = createAsyncThunk(
   },
 );
 
+// Add reaction to memory main post
+export const addMemoryMainPostReaction = createAsyncThunk(
+  "activities/addMemoryMainPostReaction",
+  async (
+    {
+      postId,
+      reactionData,
+    }: {
+      postId: string;
+      reactionData: AddReactionRequest;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await activitiesApi.addPostReaction(
+        postId,
+        reactionData,
+      );
+
+      return {
+        postId,
+        reactionSummary: response,
+      };
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add reaction to memory",
+      );
+    }
+  },
+);
+
+// Remove reaction from memory main post
+export const removeMemoryMainPostReaction = createAsyncThunk(
+  "activities/removeMemoryMainPostReaction",
+  async ({ postId }: { postId: string }, { rejectWithValue }) => {
+    try {
+      const response = await activitiesApi.removePostReaction(postId);
+
+      return {
+        postId,
+        reactionSummary: response,
+      };
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Failed to remove reaction from memory",
+      );
+    }
+  },
+);
+
 const activitiesSlice = createSlice({
   name: "activities",
   initialState,
@@ -318,9 +369,7 @@ const activitiesSlice = createSlice({
         if (index !== -1) {
           state.activities[index].reactionSummary = reactionSummary;
         }
-      })
-
-      // Remove reaction
+      }) // Remove reaction
       .addCase(removeReaction.fulfilled, (state, action) => {
         const { activityId, reactionSummary } = action.payload;
         const index = state.activities.findIndex(
@@ -330,6 +379,16 @@ const activitiesSlice = createSlice({
         if (index !== -1) {
           state.activities[index].reactionSummary = reactionSummary;
         }
+      })
+
+      // Memory main post reactions
+      .addCase(addMemoryMainPostReaction.fulfilled, (_state, _action) => {
+        // These reactions are handled by memoriesSlice
+        // No need to update activities state here
+      })
+      .addCase(removeMemoryMainPostReaction.fulfilled, (_state, _action) => {
+        // These reactions are handled by memoriesSlice
+        // No need to update activities state here
       });
   },
 });

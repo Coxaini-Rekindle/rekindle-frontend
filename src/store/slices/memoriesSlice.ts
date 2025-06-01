@@ -1,4 +1,8 @@
-import type { MemoryDto, CursorPaginationResponse } from "@/types/memory";
+import type {
+  MemoryDto,
+  CursorPaginationResponse,
+  ReactionSummaryDto,
+} from "@/types/memory";
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -140,13 +144,38 @@ const memoriesSlice = createSlice({
       delete state.hasMore[groupId];
       delete state.nextCursor[groupId];
     },
-
     clearAllMemories: (state) => {
       state.memoriesByGroup = {};
       state.currentMemory = null;
       state.hasMore = {};
       state.nextCursor = {};
       state.error = null;
+    },
+
+    // Update memory main post reactions
+    updateMemoryMainPostReactions: (
+      state,
+      action: PayloadAction<{
+        memoryId: string;
+        reactionSummary: ReactionSummaryDto;
+      }>,
+    ) => {
+      const { memoryId, reactionSummary } = action.payload; // Update in all group memories lists
+      Object.values(state.memoriesByGroup).forEach((memories) => {
+        const memory = memories.find((m) => m.id === memoryId);
+
+        if (memory?.mainPost) {
+          memory.mainPost.reactionSummary = reactionSummary;
+        }
+      });
+
+      // Update current memory if it matches
+      if (
+        state.currentMemory?.id === memoryId &&
+        state.currentMemory.mainPost
+      ) {
+        state.currentMemory.mainPost.reactionSummary = reactionSummary;
+      }
     },
   },
 });
@@ -163,6 +192,7 @@ export const {
   setCurrentMemory,
   clearMemories,
   clearAllMemories,
+  updateMemoryMainPostReactions,
 } = memoriesSlice.actions;
 
 export default memoriesSlice.reducer;

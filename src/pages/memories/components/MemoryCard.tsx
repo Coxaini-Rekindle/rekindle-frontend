@@ -1,18 +1,25 @@
 import type { MemoryDto } from "@/types/memory";
 import type { GroupMemberDto } from "@/types/group";
-import type { RootState } from "@/store";
+import type { RootState, AppDispatch } from "@/store";
 
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Avatar, AvatarGroup } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { MdCalendarToday, MdFavorite, MdPeople, MdImage } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import { MdCalendarToday, MdPeople, MdImage } from "react-icons/md";
 
 import MemoryCardImageGrid from "./MemoryCardImageGrid";
+import MemoryReactionBar from "./MemoryReactionBar";
 
 import { userApi } from "@/api/userApi";
+import {
+  addMemoryMainPostReaction,
+  removeMemoryMainPostReaction,
+} from "@/store/slices/activitiesSlice";
+import { updateMemoryMainPostReactions } from "@/store/slices/memoriesSlice";
+import { ReactionTypeDto } from "@/types/memory";
 
 interface MemoryCardProps {
   memory: MemoryDto;
@@ -21,6 +28,7 @@ interface MemoryCardProps {
 export default function MemoryCard({ memory }: MemoryCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Get group members to display participant names
   const currentGroupMembers = useSelector(
@@ -55,7 +63,6 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
 
   const participants = getParticipants();
   const creator = getCreator();
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
 
@@ -66,16 +73,61 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
     });
   };
 
-  const getReactionCount = () => {
-    return memory.mainPost?.reactionSummary?.totalCount || 0;
-  };
-
   const getImageCount = () => {
     return memory.mainPost?.images?.length || 0;
   };
-
   const handleOpenMemory = () => {
     navigate(`/memories/${memory.id}`);
+  };
+
+  // Handle reactions on memory main post
+  const handleReactionClick = async (reactionType: ReactionTypeDto) => {
+    if (!memory.mainPost) return;
+
+    // Check if user already has this reaction type
+    const hasThisReaction =
+      memory.mainPost.reactionSummary.userReactions.includes(reactionType);
+
+    try {
+      if (hasThisReaction) {
+        // Remove existing reaction
+        const result = await dispatch(
+          removeMemoryMainPostReaction({
+            postId: memory.mainPost.id,
+          }),
+        );
+
+        if (removeMemoryMainPostReaction.fulfilled.match(result)) {
+          // Update memory in the memories store
+          dispatch(
+            updateMemoryMainPostReactions({
+              memoryId: memory.id,
+              reactionSummary: result.payload.reactionSummary,
+            }),
+          );
+        }
+      } else {
+        // Add new reaction (will replace existing one if any)
+        const result = await dispatch(
+          addMemoryMainPostReaction({
+            postId: memory.mainPost.id,
+            reactionData: { type: reactionType },
+          }),
+        );
+
+        if (addMemoryMainPostReaction.fulfilled.match(result)) {
+          // Update memory in the memories store
+          dispatch(
+            updateMemoryMainPostReactions({
+              memoryId: memory.id,
+              reactionSummary: result.payload.reactionSummary,
+            }),
+          );
+        }
+      }
+    } catch {
+      // Silently handle error - could be logged to error service in production
+    }
   };
 
   return (
@@ -120,7 +172,6 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
             {memory.description}
           </p>
         )}
-
         {/* Main Post Content Preview */}
         {memory.mainPost && (
           <div className="bg-content2 rounded-lg p-3 mb-4">
@@ -169,17 +220,20 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
               <span className="text-small text-foreground-500">
                 +{participants.length - 5} others
               </span>
-            )}
+            )}{" "}
           </div>
         )}
 
         {/* Interaction Stats */}
         <div className="flex items-center justify-between pt-3 border-t border-divider">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1 text-foreground-500">
-              <MdFavorite size={16} />
-              <span className="text-small">{getReactionCount()}</span>
-            </div>
+            {/* Interactive reaction bar for memory main post */}
+            {memory.mainPost && (
+              <MemoryReactionBar
+                mainPost={memory.mainPost}
+                onReactionClick={handleReactionClick}
+              />
+            )}
             {getImageCount() > 0 && (
               <div className="flex items-center gap-1 text-foreground-500">
                 <MdImage size={16} />
