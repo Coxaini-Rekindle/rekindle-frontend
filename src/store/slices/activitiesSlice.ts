@@ -7,6 +7,7 @@ import {
   type MemoryActivityDto,
   type CreateCommentRequest,
   type UpdateCommentRequest,
+  type CreatePostRequest,
   type AddReactionRequest,
   MemoryActivityType,
 } from "@/types/activity";
@@ -83,11 +84,11 @@ export const createComment = createAsyncThunk(
 export const createPost = createAsyncThunk(
   "activities/createPost",
   async (
-    { memoryId, content }: { memoryId: string; content: string },
+    { memoryId, postData }: { memoryId: string; postData: CreatePostRequest },
     { rejectWithValue },
   ) => {
     try {
-      const response = await activitiesApi.createPost(memoryId, content);
+      const response = await activitiesApi.createPost(memoryId, postData);
 
       return response;
     } catch (error: any) {

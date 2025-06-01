@@ -51,8 +51,20 @@ export interface CreateCommentRequest {
   replyToCommentId: string | null;
 }
 
+export interface CreatePostRequest {
+  content: string;
+  title?: string;
+  images?: File[];
+}
+
 export interface UpdateCommentRequest {
   content: string;
+}
+
+export interface CreatePostRequest {
+  content: string;
+  title?: string;
+  images?: File[];
 }
 
 export interface AddReactionRequest {

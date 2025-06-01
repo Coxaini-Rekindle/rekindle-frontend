@@ -2,6 +2,7 @@ import type {
   CommentDto,
   CreateCommentRequest,
   UpdateCommentRequest,
+  CreatePostRequest,
   AddReactionRequest,
   CursorPaginationResponseOfMemoryActivityDto,
   MemoryActivityDto,
@@ -120,14 +121,29 @@ export const activitiesApi = {
   // Create a new post
   createPost: async (
     memoryId: string,
-    content: string,
+    postData: CreatePostRequest,
   ): Promise<MemoryActivityDto> => {
+    const formData = new FormData();
+
+    formData.append("content", postData.content);
+
+    if (postData.title) {
+      formData.append("title", postData.title);
+    }
+
+    if (postData.images && postData.images.length > 0) {
+      postData.images.forEach((image) => {
+        formData.append("images", image);
+      });
+    }
     const response = await apiClient.post(
-      buildEndpoint(
-        API_PREFIXES.MEMORIES,
-        `/memories/${memoryId}/activities/posts`,
-      ),
-      { content },
+      buildEndpoint(API_PREFIXES.MEMORIES, `/memories/${memoryId}/posts`),
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
     );
 
     return response.data;

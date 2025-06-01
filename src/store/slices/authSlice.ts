@@ -2,7 +2,7 @@ import type { AuthenticationResult } from "@/api/authApi";
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface AuthState {
+export interface AuthState {
   token: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;

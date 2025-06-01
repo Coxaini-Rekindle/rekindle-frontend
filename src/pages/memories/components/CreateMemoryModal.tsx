@@ -10,6 +10,7 @@ import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Form } from "@heroui/form";
 import { Chip } from "@heroui/chip";
+import { Image } from "@heroui/image";
 import { useTranslation } from "react-i18next";
 import {
   MdTitle,
@@ -17,6 +18,7 @@ import {
   MdPhoto,
   MdPerson,
   MdAdd,
+  MdClose,
 } from "react-icons/md";
 
 import { useMemories } from "@/hooks/useMemories";
@@ -72,6 +74,12 @@ export default function CreateMemoryModal({
     if (files) {
       setImages(Array.from(files));
     }
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    const updatedImages = images.filter((_, index) => index !== indexToRemove);
+
+    setImages(updatedImages);
   };
 
   const handleSubmit = async () => {
@@ -188,6 +196,7 @@ export default function CreateMemoryModal({
                   <label className="block text-sm font-medium text-foreground mb-2">
                     {t("memories.createModal.imagesLabel")}
                   </label>
+
                   <div className="flex gap-2">
                     <Input
                       ref={fileInputRef}
@@ -199,11 +208,32 @@ export default function CreateMemoryModal({
                     />
                   </div>
                   {images.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-sm text-foreground-500">
+                    <div className="mt-3 space-y-2">
+                      <p className="text-sm text-foreground-600">
                         {images.length}{" "}
                         {images.length === 1 ? "image" : "images"} selected
                       </p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {images.map((image, index) => (
+                          <div key={index} className="relative">
+                            <Image
+                              alt={`Preview ${index + 1}`}
+                              className="w-full h-24 object-cover rounded-lg"
+                              src={URL.createObjectURL(image)}
+                            />
+                            <Button
+                              isIconOnly
+                              className="absolute top-1 right-1 min-w-6 h-6"
+                              color="danger"
+                              size="sm"
+                              variant="solid"
+                              onPress={() => handleRemoveImage(index)}
+                            >
+                              <MdClose size={12} />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -231,6 +261,7 @@ export default function CreateMemoryModal({
                         }
                       }}
                     />
+
                     <Button
                       isIconOnly
                       color="primary"

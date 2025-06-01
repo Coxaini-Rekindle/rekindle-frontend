@@ -9,7 +9,6 @@ import { Button } from "@heroui/button";
 import { Spinner } from "@heroui/spinner";
 import { MdArrowBack } from "react-icons/md";
 
-import MemoryCard from "./components/MemoryCard";
 import CommentsSection from "./components/CommentsSection";
 import AddPostSection from "./components/AddPostSection";
 
@@ -27,6 +26,8 @@ export default function MemoryDetail() {
   const [error, setError] = useState<string | null>(null);
   const [isAddingPost, setIsAddingPost] = useState(false);
   const [newPost, setNewPost] = useState("");
+  const [postTitle, setPostTitle] = useState("");
+  const [postImages, setPostImages] = useState<File[]>([]);
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -67,11 +68,21 @@ export default function MemoryDetail() {
     setIsAddingPost(isAdding);
     if (!isAdding) {
       setNewPost("");
+      setPostTitle("");
+      setPostImages([]);
     }
   };
 
   const handlePostChange = (post: string) => {
     setNewPost(post);
+  };
+
+  const handlePostTitleChange = (title: string) => {
+    setPostTitle(title);
+  };
+
+  const handlePostImagesChange = (images: File[]) => {
+    setPostImages(images);
   };
 
   const handleSubmitPost = async () => {
@@ -81,14 +92,20 @@ export default function MemoryDetail() {
       await dispatch(
         createPost({
           memoryId: memory.id,
-          content: newPost.trim(),
+          postData: {
+            content: newPost.trim(),
+            title: postTitle.trim() || undefined,
+            images: postImages.length > 0 ? postImages : undefined,
+          },
         }),
       );
 
       setNewPost("");
+      setPostTitle("");
+      setPostImages([]);
       setIsAddingPost(false);
-    } catch (error) {
-      console.error("Failed to create post:", error);
+    } catch {
+      // Handle error silently or show user feedback
     }
   };
 
@@ -141,12 +158,18 @@ export default function MemoryDetail() {
       </div>
 
       {/* Memory content */}
+
       <div className="space-y-6">
         {/* Add Post section */}
+
         <AddPostSection
           isAddingPost={isAddingPost}
           newPost={newPost}
+          postImages={postImages}
+          postTitle={postTitle}
           onPostChange={handlePostChange}
+          onPostImagesChange={handlePostImagesChange}
+          onPostTitleChange={handlePostTitleChange}
           onSubmitPost={handleSubmitPost}
           onToggleAddingPost={handleToggleAddingPost}
         />
