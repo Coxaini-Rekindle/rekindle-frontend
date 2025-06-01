@@ -1,23 +1,32 @@
+import type { AppDispatch } from "@/store";
+import type { MemoryDto } from "@/types/memory";
+
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Button } from "@heroui/button";
 import { Spinner } from "@heroui/spinner";
 import { MdArrowBack } from "react-icons/md";
 
 import MemoryCard from "./components/MemoryCard";
+import CommentsSection from "./components/CommentsSection";
+import AddPostSection from "./components/AddPostSection";
 
-import { MemoryDto } from "@/types/memory";
 import { memoriesApi } from "@/api/memoriesApi";
+import { createPost } from "@/store/slices/activitiesSlice";
 
 export default function MemoryDetail() {
   const { t } = useTranslation();
   const { memoryId } = useParams<{ memoryId: string }>();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [memory, setMemory] = useState<MemoryDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isAddingPost, setIsAddingPost] = useState(false);
+  const [newPost, setNewPost] = useState("");
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -30,7 +39,6 @@ export default function MemoryDetail() {
       try {
         setLoading(true);
         setError(null);
-
         const memoryData = await memoriesApi.getMemoryById(memoryId);
 
         setMemory(memoryData);
@@ -52,6 +60,35 @@ export default function MemoryDetail() {
     } else {
       // If no group id is available, go to groups page
       navigate("/groups");
+    }
+  };
+
+  const handleToggleAddingPost = (isAdding: boolean) => {
+    setIsAddingPost(isAdding);
+    if (!isAdding) {
+      setNewPost("");
+    }
+  };
+
+  const handlePostChange = (post: string) => {
+    setNewPost(post);
+  };
+
+  const handleSubmitPost = async () => {
+    if (!newPost.trim() || !memory?.id) return;
+
+    try {
+      await dispatch(
+        createPost({
+          memoryId: memory.id,
+          content: newPost.trim(),
+        }),
+      );
+
+      setNewPost("");
+      setIsAddingPost(false);
+    } catch (error) {
+      console.error("Failed to create post:", error);
     }
   };
 
@@ -107,12 +144,17 @@ export default function MemoryDetail() {
       <div className="space-y-6">
         <MemoryCard memory={memory} />
 
-        {/* Future: Add comments/posts section here when API supports it */}
-        <div className="bg-content2 rounded-lg p-6">
-          <p className="text-foreground-500 text-center">
-            {t("memories.commentsTitle")} - {t("common.comingSoon")}
-          </p>
-        </div>
+        {/* Add Post section */}
+        <AddPostSection
+          isAddingPost={isAddingPost}
+          newPost={newPost}
+          onPostChange={handlePostChange}
+          onSubmitPost={handleSubmitPost}
+          onToggleAddingPost={handleToggleAddingPost}
+        />
+
+        {/* Comments/Posts section */}
+        <CommentsSection memory={memory} />
       </div>
     </div>
   );

@@ -241,7 +241,28 @@
     "close": "Close",
     "cancel": "Cancel",
     "goBack": "Go Back",
-    "comingSoon": "Coming Soon"
+    "comingSoon": "Coming Soon",
+    "retry": "Retry",
+    "confirmDelete": "Are you sure you want to delete this?"
+  },
+  "activities": {
+    "loading": "Loading activities...",
+    "loadMore": "Load More",
+    "noActivities": "No posts or comments yet",
+    "beFirstToComment": "Be the first to share your thoughts!",
+    "newComment": "New Comment",
+    "commentPlaceholder": "Share your thoughts...",
+    "replyPlaceholder": "Write your reply...",
+    "contentPlaceholder": "Update your content...",
+    "postComment": "Post Comment",
+    "submitReply": "Reply",
+    "update": "Update",
+    "commentsAndPosts": "Comments & Posts",
+    "edit": "Edit",
+    "delete": "Delete",
+    "reply": "Reply",
+    "post": "Post",
+    "comment": "Comment"
   },
   "memories": {
     "title": "Memories",

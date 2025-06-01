@@ -32,7 +32,6 @@ export default function MemoryImage({
         setImageUrl(url);
         setError(false);
       } catch (err) {
-        console.error("Failed to load image:", err);
         setError(true);
       } finally {
         setLoading(false);

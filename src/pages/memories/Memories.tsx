@@ -32,7 +32,8 @@ export default function Memories() {
 
   // Get group details if we're in a group context
   const { data: groupData } = useGroupDetails(groupId || "", !!groupId);
-  const { data: groupMembers } = useGroupMembers(groupId || "", !!groupId);
+  const { data: groupMembers, isLoading: isLoadingGroupMembers } =
+    useGroupMembers(groupId || "", !!groupId);
 
   // Load memories on component mount or when groupId changes
   useEffect(() => {
@@ -68,8 +69,11 @@ export default function Memories() {
     setIsCreateModalOpen(true);
   };
 
-  // Loading state
-  if (isLoading && memories.length === 0) {
+  // Loading state - ensure both memories and group members are loaded before rendering
+  if (
+    (isLoading && memories.length === 0) ||
+    (groupId && isLoadingGroupMembers)
+  ) {
     return (
       <div className="flex items-center justify-center h-64">
         <Spinner size="lg" />

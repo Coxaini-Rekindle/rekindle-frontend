@@ -4,6 +4,7 @@ import authReducer from "./slices/authSlice";
 import groupsReducer from "./slices/groupsSlice";
 import memoriesReducer from "./slices/memoriesSlice";
 import userReducer from "./slices/userSlice";
+import activitiesReducer from "./slices/activitiesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     groups: groupsReducer,
     memories: memoriesReducer,
     user: userReducer,
+    activities: activitiesReducer,
     // Add other reducers here as needed
   },
   middleware: (getDefaultMiddleware) =>
