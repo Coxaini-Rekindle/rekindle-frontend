@@ -33,31 +33,78 @@ export default function ActivityFooter({
     setShowReactionPicker(false);
   };
 
+  // Get reaction metadata
+  const getReactionEmoji = (type: ReactionTypeDto): string => {
+    const emojiMap = {
+      [ReactionTypeDto.Love]: "❤️",
+      [ReactionTypeDto.Celebrate]: "🎉",
+      [ReactionTypeDto.Support]: "👍",
+      [ReactionTypeDto.Laugh]: "😄",
+      [ReactionTypeDto.Wow]: "😮",
+      [ReactionTypeDto.Grateful]: "🙏",
+      [ReactionTypeDto.Warm]: "☀️",
+      [ReactionTypeDto.Nostalgic]: "🕰️",
+      [ReactionTypeDto.Peaceful]: "☮️",
+      [ReactionTypeDto.Memories]: "📸",
+      [ReactionTypeDto.Family]: "👪",
+      [ReactionTypeDto.Friendship]: "🤝",
+      [ReactionTypeDto.Journey]: "🛤️",
+      [ReactionTypeDto.Milestone]: "🏆",
+      [ReactionTypeDto.Adventure]: "🏕️",
+    };
+
+    return emojiMap[type] || "👍";
+  };
+
+  // Get reactions that have been used (have counts > 0)
+  const usedReactions = Object.entries(activity.reactionSummary.reactionCounts)
+    .filter(([_, count]) => count > 0)
+    .map(([type, count]) => ({
+      type: type as ReactionTypeDto,
+      count,
+      emoji: getReactionEmoji(type as ReactionTypeDto),
+      isUserReaction: activity.reactionSummary.userReactions.includes(
+        type as ReactionTypeDto,
+      ),
+    }));
+
+  // Handle clicking on an existing reaction
+  const handleExistingReactionClick = (reactionType: ReactionTypeDto) => {
+    onReactionClick(reactionType);
+  };
+
   return (
     <div className="py-2 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        {/* Reaction button with dropdown */}
+      <div className="flex items-center gap-2">
+        {/* Existing reactions list */}
+        <div className="flex items-center gap-1">
+          {usedReactions.map((reaction) => (
+            <button
+              key={reaction.type}
+              className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm transition-colors hover:bg-default-100 ${
+                reaction.isUserReaction
+                  ? "bg-primary-100 text-primary-700 border border-primary-200"
+                  : "bg-default-50 text-default-700 border border-default-200"
+              }`}
+              title={`${reaction.count} ${reaction.type}${
+                reaction.count !== 1 ? "s" : ""
+              }`}
+              onClick={() => handleExistingReactionClick(reaction.type)}
+            >
+              <span className="text-base">{reaction.emoji}</span>
+              <span className="font-medium">{reaction.count}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Add reaction dropdown */}
         <Dropdown
           isOpen={showReactionPicker}
           onOpenChange={(open) => setShowReactionPicker(open)}
         >
           <DropdownTrigger>
-            <Button
-              color={
-                activity.reactionSummary.userReactions.length > 0
-                  ? "primary"
-                  : "default"
-              }
-              size="sm"
-              startContent={<MdFavorite size={16} />}
-              variant={
-                activity.reactionSummary.userReactions.length > 0
-                  ? "solid"
-                  : "light"
-              }
-            >
-              {activity.reactionSummary.totalCount > 0 &&
-                activity.reactionSummary.totalCount}
+            <Button className="min-w-unit-8 px-2" size="sm" variant="light">
+              <MdFavorite size={16} />
             </Button>
           </DropdownTrigger>
 
@@ -65,7 +112,7 @@ export default function ActivityFooter({
             aria-label="Reaction options"
             className="min-w-80 max-h-96 overflow-y-auto"
           >
-            <DropdownSection title="Quick Reactions">
+            <DropdownSection title="Add Reaction">
               <DropdownItem
                 key="reactions-grid"
                 className="p-0"
