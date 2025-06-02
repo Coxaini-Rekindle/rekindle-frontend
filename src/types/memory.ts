@@ -70,7 +70,6 @@ export interface CreateMemoryFormRequest {
   description: string;
   content: string;
   images?: File[];
-  participantIds?: string;
   existingFileIds?: string;
 }
 
