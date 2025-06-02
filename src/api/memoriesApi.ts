@@ -51,10 +51,6 @@ export const memoriesApi = {
     formData.append("description", memoryData.description);
     formData.append("content", memoryData.content);
 
-    if (memoryData.participantIds) {
-      formData.append("participantIds", memoryData.participantIds);
-    }
-
     if (memoryData.existingFileIds) {
       formData.append("existingFileIds", memoryData.existingFileIds);
     }

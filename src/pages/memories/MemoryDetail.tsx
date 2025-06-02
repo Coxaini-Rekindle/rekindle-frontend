@@ -4,7 +4,7 @@ import type { MemoryDto } from "@/types/memory";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@heroui/button";
 import { Spinner } from "@heroui/spinner";
 import { MdArrowBack } from "react-icons/md";
@@ -14,12 +14,21 @@ import AddPostSection from "./components/AddPostSection";
 
 import { memoriesApi } from "@/api/memoriesApi";
 import { createPost } from "@/store/slices/activitiesSlice";
+import {
+  fetchGroupMembers,
+  selectCurrentGroupMembers,
+  selectGroupsLoading,
+} from "@/store/slices/groupsSlice";
 
 export default function MemoryDetail() {
   const { t } = useTranslation();
   const { memoryId } = useParams<{ memoryId: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+
+  // Redux selectors
+  const currentGroupMembers = useSelector(selectCurrentGroupMembers);
+  const groupsLoading = useSelector(selectGroupsLoading);
 
   const [memory, setMemory] = useState<MemoryDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,6 +62,18 @@ export default function MemoryDetail() {
 
     fetchMemory();
   }, [memoryId, navigate, t]);
+
+  // Fetch group members if they're not present and we have memory data
+  useEffect(() => {
+    if (
+      memory &&
+      memory.groupId &&
+      currentGroupMembers.length === 0 &&
+      !groupsLoading
+    ) {
+      dispatch(fetchGroupMembers(memory.groupId));
+    }
+  }, [memory, currentGroupMembers.length, groupsLoading, dispatch]);
 
   const handleBack = () => {
     // Try to extract group id from memory if available

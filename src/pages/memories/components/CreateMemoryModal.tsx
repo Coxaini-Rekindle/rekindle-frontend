@@ -9,17 +9,9 @@ import {
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Form } from "@heroui/form";
-import { Chip } from "@heroui/chip";
 import { Image } from "@heroui/image";
 import { useTranslation } from "react-i18next";
-import {
-  MdTitle,
-  MdDescription,
-  MdPhoto,
-  MdPerson,
-  MdAdd,
-  MdClose,
-} from "react-icons/md";
+import { MdTitle, MdDescription, MdPhoto, MdClose } from "react-icons/md";
 
 import { useMemories } from "@/hooks/useMemories";
 
@@ -41,8 +33,6 @@ export default function CreateMemoryModal({
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<File[]>([]);
-  const [participantIds, setParticipantIds] = useState<string[]>([]);
-  const [currentParticipant, setCurrentParticipant] = useState("");
   const [errors, setErrors] = useState<{
     title?: string;
     content?: string;
@@ -50,23 +40,6 @@ export default function CreateMemoryModal({
   }>({});
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleAddParticipant = () => {
-    if (!currentParticipant.trim()) return;
-
-    if (!participantIds.includes(currentParticipant)) {
-      setParticipantIds([...participantIds, currentParticipant]);
-    }
-
-    setCurrentParticipant("");
-    setErrors({ ...errors, participant: undefined });
-  };
-
-  const handleRemoveParticipant = (participantToRemove: string) => {
-    setParticipantIds(
-      participantIds.filter((id) => id !== participantToRemove),
-    );
-  };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -104,8 +77,6 @@ export default function CreateMemoryModal({
           description: description.trim(),
           content: content.trim(),
           images,
-          participantIds: participantIds.join(","),
-          // existingFileIds can be added later if needed
         });
 
         // Reset form and close modal
@@ -123,8 +94,6 @@ export default function CreateMemoryModal({
     setDescription("");
     setContent("");
     setImages([]);
-    setParticipantIds([]);
-    setCurrentParticipant("");
     setErrors({});
 
     // Reset file input
@@ -236,60 +205,6 @@ export default function CreateMemoryModal({
                       </div>
                     </div>
                   )}
-                </div>
-
-                {/* Participants */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    {t("memories.createModal.participantsLabel")}
-                  </label>
-                  <div className="flex gap-2">
-                    <Input
-                      className="flex-1"
-                      errorMessage={errors.participant}
-                      isInvalid={!!errors.participant}
-                      placeholder={t(
-                        "memories.createModal.participantsPlaceholder",
-                      )}
-                      startContent={<MdPerson className="text-default-400" />}
-                      value={currentParticipant}
-                      onChange={(e) => setCurrentParticipant(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleAddParticipant();
-                        }
-                      }}
-                    />
-
-                    <Button
-                      isIconOnly
-                      color="primary"
-                      onPress={handleAddParticipant}
-                    >
-                      <MdAdd />
-                    </Button>
-                  </div>
-
-                  {/* Participant chips */}
-                  {participantIds.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {participantIds.map((participantId) => (
-                        <Chip
-                          key={participantId}
-                          color="primary"
-                          variant="flat"
-                          onClose={() => handleRemoveParticipant(participantId)}
-                        >
-                          {participantId}
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-
-                  <p className="text-xs text-foreground-400 mt-1">
-                    {t("memories.createModal.participantsHint")}
-                  </p>
                 </div>
               </Form>
             </ModalBody>

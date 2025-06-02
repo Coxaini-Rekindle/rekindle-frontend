@@ -1,6 +1,9 @@
 import type { GroupDto, GroupMemberDto } from "@/types/group";
+import type { RootState } from "..";
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+
+import { groupsApi } from "@/api/groupsApi";
 
 interface GroupsState {
   groups: GroupDto[];
@@ -17,6 +20,20 @@ const initialState: GroupsState = {
   isLoading: false,
   error: null,
 };
+
+// Async thunks
+export const fetchGroupMembers = createAsyncThunk(
+  "groups/fetchGroupMembers",
+  async (groupId: string, { rejectWithValue }) => {
+    try {
+      const members = await groupsApi.getGroupMembers(groupId);
+
+      return { groupId, members };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.detail || error.message);
+    }
+  },
+);
 
 const groupsSlice = createSlice({
   name: "groups",
@@ -92,6 +109,29 @@ const groupsSlice = createSlice({
       state.currentGroupMembers = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchGroupMembers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(
+        fetchGroupMembers.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ groupId: string; members: GroupMemberDto[] }>,
+        ) => {
+          const { members } = action.payload;
+
+          state.currentGroupMembers = members;
+          state.isLoading = false;
+          state.error = null;
+        },
+      )
+      .addCase(fetchGroupMembers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+  },
 });
 
 export const {
@@ -108,3 +148,8 @@ export const {
 } = groupsSlice.actions;
 
 export default groupsSlice.reducer;
+
+// Selectors
+export const selectCurrentGroupMembers = (state: RootState) =>
+  state.groups.currentGroupMembers;
+export const selectGroupsLoading = (state: RootState) => state.groups.isLoading;
