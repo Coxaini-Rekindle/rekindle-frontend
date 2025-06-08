@@ -9,7 +9,9 @@ import { MdAdd, MdSearch, MdArrowBack } from "react-icons/md";
 import MemoryCard from "./components/MemoryCard";
 import CreateMemoryModal from "./components/CreateMemoryModal";
 
+import { SearchResults } from "@/pages/search";
 import { useMemories } from "@/hooks/useMemories";
+import { useSearch } from "@/hooks/useSearch";
 import { useGroupDetails, useGroupMembers } from "@/hooks/useGroups";
 
 export default function Memories() {
@@ -18,6 +20,15 @@ export default function Memories() {
   const { groupId } = useParams<{ groupId: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Get search results
+  const {
+    searchResults,
+    isSearching,
+    searchError,
+    searchMemories,
+    clearSearch,
+  } = useSearch();
 
   // Get memories using the new hook
   const {
@@ -41,6 +52,25 @@ export default function Memories() {
       fetchMemories(groupId, 20, true);
     }
   }, [groupId, fetchMemories]);
+
+  // Handle search when query changes
+  useEffect(() => {
+    if (searchQuery.trim() && groupId) {
+      // Debounce search to avoid too many API calls
+      const searchTimeout = setTimeout(() => {
+        searchMemories({
+          groupId,
+          searchTerm: searchQuery.trim(),
+          limit: 20,
+          offset: 0,
+        });
+      }, 500);
+
+      return () => clearTimeout(searchTimeout);
+    } else {
+      clearSearch();
+    }
+  }, [searchQuery, groupId, searchMemories, clearSearch]);
 
   // Filter memories based on search query
   const filteredMemories = memories.filter((memory) => {
@@ -140,7 +170,6 @@ export default function Memories() {
           </Button>
         </div>
       </div>
-
       {/* Search */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
@@ -158,7 +187,6 @@ export default function Memories() {
           />
         </div>
       </div>
-
       <Button
         className="mb-6 w-full sm:hidden"
         color="primary"
@@ -167,7 +195,6 @@ export default function Memories() {
       >
         {t("memories.createMemory")}
       </Button>
-
       {/* Stats */}
       {groupId && (
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -202,10 +229,17 @@ export default function Memories() {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Memory Feed */}
-      {filteredMemories.length > 0 ? (
+      )}{" "}
+      {/* Memory Feed or Search Results */}
+      {searchQuery.trim() ? (
+        <SearchResults
+          error={searchError}
+          groupId={groupId || ""}
+          isLoading={isSearching}
+          results={searchResults}
+          searchQuery={searchQuery}
+        />
+      ) : filteredMemories.length > 0 ? (
         <div className="space-y-6">
           {filteredMemories.map((memory) => (
             <MemoryCard key={memory.id} memory={memory} />
@@ -249,7 +283,6 @@ export default function Memories() {
           )}
         </div>
       )}
-
       {/* Create Memory Modal */}
       {groupId && (
         <CreateMemoryModal

@@ -130,7 +130,7 @@ export default function MemoryCardImageGrid({
           </div>
         ) : totalImages === 3 ? (
           // 3 images: main large + 2 smaller on the side
-          <div className="grid grid-cols-3 gap-3 auto-rows-[200px]">
+          <div className="grid grid-cols-3 gap-3">
             <ImageWithCaption
               alt="Main memory image"
               className="col-span-2 row-span-2"
@@ -142,7 +142,6 @@ export default function MemoryCardImageGrid({
                 key={image.fileId}
                 alt={`Memory image ${index + 2}`}
                 captionSize="xs"
-                className="aspect-square"
                 image={image}
                 postId={postId}
               />
@@ -163,7 +162,6 @@ export default function MemoryCardImageGrid({
                 key={image.fileId}
                 alt={`Memory image ${index + 2}`}
                 captionSize="xs"
-                className="aspect-square"
                 image={image}
                 postId={postId}
               />

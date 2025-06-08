@@ -161,6 +161,7 @@ const memoriesSlice = createSlice({
       }>,
     ) => {
       const { memoryId, reactionSummary } = action.payload; // Update in all group memories lists
+
       Object.values(state.memoriesByGroup).forEach((memories) => {
         const memory = memories.find((m) => m.id === memoryId);
 

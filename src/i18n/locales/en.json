@@ -347,13 +347,27 @@
     "viewAllGroups": "View All Groups",
     "userActions": "User actions",
     "myAccount": "My Account",
-    "profile": "Profile",
-    "settings": "Settings",
+    "profile": "Profile",    "settings": "Settings",
     "theme": "Theme",
     "systemSettings": "System Settings",
     "dangerZone": "Danger Zone",
     "logout": "Logout",
     "logoutDescription": "Log out of your account",
     "myGroups": "My Groups"
+  },
+  "search": {
+    "searching": "Searching memories...",
+    "viewMemory": "View memory",
+    "results": {
+      "title": "Search Results",
+      "subtitle": "Found {{count}} result(s) for \"{{query}}\""
+    },
+    "noResults": {
+      "title": "No results found",
+      "subtitle": "No memories found matching \"{{query}}\""
+    },
+    "error": {
+      "title": "Search Error"
+    }
   }
 }
