@@ -5,6 +5,7 @@ export { default as MemoryMetadata } from "./MemoryMetadata";
 export { default as MemoryImageGrid } from "./MemoryImageGrid";
 export { default as MemoryStats } from "./MemoryStats";
 export { default as AddPostSection } from "./AddPostSection";
+export { default as AddContentSection } from "./AddContentSection";
 export { default as CommentsSection } from "./CommentsSection";
 export { default as CreateMemoryModal } from "./CreateMemoryModal";
 export { default as ActivityItem } from "./ActivityItem";

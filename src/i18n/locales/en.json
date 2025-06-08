@@ -244,10 +244,10 @@
     "comingSoon": "Coming Soon",
     "retry": "Retry",
     "confirmDelete": "Are you sure you want to delete this?"
-  },
-  "activities": {
+  },  "activities": {
     "loading": "Loading activities...",
     "loadMore": "Load More",
+    "loadOlder": "Load Older",
     "noActivities": "No posts or comments yet",
     "beFirstToComment": "Be the first to share your thoughts!",
     "newComment": "New Comment",
@@ -281,10 +281,12 @@
     "loading": "Loading memory...",
     "loadMore": "Load More",
     "loadingMore": "Loading more...",
-    "retry": "Retry",
-    "addPost": "Add a post",
+    "retry": "Retry",    "addPost": "Add a post",
     "postPlaceholder": "Share your thoughts about this memory...",
     "post": "Post",
+    "postMode": "Post Mode - Images will be included",
+    "commentMode": "Comment Mode - Text only",
+    "enterToSubmit": "Press Enter to submit",
     "commentsTitle": "Comments & Posts",
     "noComments": "No comments yet. Be the first to share your thoughts!",
     "justNow": "Just now",

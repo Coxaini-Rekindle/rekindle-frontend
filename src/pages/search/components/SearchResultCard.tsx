@@ -15,7 +15,7 @@ interface SearchResultCardProps {
 
 export default function SearchResultCard({
   result,
-  groupId,
+  groupId: _groupId,
 }: SearchResultCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -52,19 +52,17 @@ export default function SearchResultCard({
               </span>
             </div>
           </div>
-        </div>
-
+        </div>{" "}
         {/* Divider */}
         <div className="border-t border-divider my-3" />
-
         {/* Image and Content */}
         <div className="space-y-3">
           {" "}
           {/* Image */}
-          <div className="relative aspect-video bg-content2 rounded-lg overflow-hidden">
+          <div className="relative rounded-lg overflow-hidden">
             <MemoryImage
               alt={result.photo.title || "Memory image"}
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain max-h-[500px]"
               fileId={result.photo.photoId}
               postId={result.photo.postId}
             />
@@ -89,10 +87,8 @@ export default function SearchResultCard({
             </div>
           )}
         </div>
-
         {/* Divider */}
         <div className="border-t border-divider my-3" />
-
         {/* Action */}
         <div className="flex justify-end">
           <Button

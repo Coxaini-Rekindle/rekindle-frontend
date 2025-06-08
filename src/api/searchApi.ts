@@ -1,5 +1,4 @@
 import apiClient from "./apiClient";
-
 import { API_PREFIXES, buildEndpoint } from "./apiConfig";
 
 import { SearchMemoryResponse, SearchParams } from "@/types/search";

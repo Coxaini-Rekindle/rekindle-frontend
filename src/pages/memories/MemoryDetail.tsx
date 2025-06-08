@@ -10,10 +10,8 @@ import { Spinner } from "@heroui/spinner";
 import { MdArrowBack } from "react-icons/md";
 
 import CommentsSection from "./components/CommentsSection";
-import AddPostSection from "./components/AddPostSection";
 
 import { memoriesApi } from "@/api/memoriesApi";
-import { createPost } from "@/store/slices/activitiesSlice";
 import {
   fetchGroupMembers,
   selectCurrentGroupMembers,
@@ -29,14 +27,9 @@ export default function MemoryDetail() {
   // Redux selectors
   const currentGroupMembers = useSelector(selectCurrentGroupMembers);
   const groupsLoading = useSelector(selectGroupsLoading);
-
   const [memory, setMemory] = useState<MemoryDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isAddingPost, setIsAddingPost] = useState(false);
-  const [newPost, setNewPost] = useState("");
-  const [postTitle, setPostTitle] = useState("");
-  const [postImages, setPostImages] = useState<File[]>([]);
 
   useEffect(() => {
     const fetchMemory = async () => {
@@ -85,51 +78,6 @@ export default function MemoryDetail() {
     }
   };
 
-  const handleToggleAddingPost = (isAdding: boolean) => {
-    setIsAddingPost(isAdding);
-    if (!isAdding) {
-      setNewPost("");
-      setPostTitle("");
-      setPostImages([]);
-    }
-  };
-
-  const handlePostChange = (post: string) => {
-    setNewPost(post);
-  };
-
-  const handlePostTitleChange = (title: string) => {
-    setPostTitle(title);
-  };
-
-  const handlePostImagesChange = (images: File[]) => {
-    setPostImages(images);
-  };
-
-  const handleSubmitPost = async () => {
-    if (!newPost.trim() || !memory?.id) return;
-
-    try {
-      await dispatch(
-        createPost({
-          memoryId: memory.id,
-          postData: {
-            content: newPost.trim(),
-            title: postTitle.trim() || undefined,
-            images: postImages.length > 0 ? postImages : undefined,
-          },
-        }),
-      );
-
-      setNewPost("");
-      setPostTitle("");
-      setPostImages([]);
-      setIsAddingPost(false);
-    } catch {
-      // Handle error silently or show user feedback
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -166,35 +114,24 @@ export default function MemoryDetail() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       {/* Header with back button */}
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          isIconOnly
-          aria-label={t("common.goBack")}
-          variant="light"
-          onPress={handleBack}
-        >
-          <MdArrowBack className="text-xl" />
-        </Button>
-        <h1 className="text-2xl font-bold">{t("memories.memoryDetail")}</h1>
+      <div className="sticky top-2.5 z-50">
+        <div className="mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              isIconOnly
+              aria-label={t("common.goBack")}
+              variant="light"
+              onPress={handleBack}
+            >
+              <MdArrowBack className="text-xl" />
+            </Button>
+            <h1 className="text-2xl font-bold">{t("memories.memoryDetail")}</h1>
+          </div>
+        </div>
       </div>
 
       {/* Memory content */}
-
       <div className="space-y-6">
-        {/* Add Post section */}
-
-        <AddPostSection
-          isAddingPost={isAddingPost}
-          newPost={newPost}
-          postImages={postImages}
-          postTitle={postTitle}
-          onPostChange={handlePostChange}
-          onPostImagesChange={handlePostImagesChange}
-          onPostTitleChange={handlePostTitleChange}
-          onSubmitPost={handleSubmitPost}
-          onToggleAddingPost={handleToggleAddingPost}
-        />
-
         {/* Comments/Posts section */}
         <CommentsSection memory={memory} />
       </div>

@@ -283,16 +283,23 @@ const activitiesSlice = createSlice({
       .addCase(fetchActivities.fulfilled, (state, action) => {
         const { activities, nextCursor, hasMore, reset } = action.payload;
 
+        // Sort activities by ascending date (oldest first)
+        const sortedActivities = [...activities].sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
+
         if (reset) {
-          state.activities = activities;
+          state.activities = sortedActivities;
         } else {
           // Add new items while avoiding duplicates
           const existingIds = new Set(state.activities.map((a) => a.id));
-          const newActivities = activities.filter(
+          const newActivities = sortedActivities.filter(
             (a) => !existingIds.has(a.id),
           );
 
-          state.activities = [...state.activities, ...newActivities];
+          // For reverse pagination, prepend older activities to the beginning
+          state.activities = [...newActivities, ...state.activities];
         }
 
         state.nextCursor = nextCursor;
@@ -327,14 +334,14 @@ const activitiesSlice = createSlice({
           isTopLevelComment: newComment.isTopLevelComment,
         };
 
-        // Add to the top of the list
-        state.activities.unshift(newActivity);
+        // Add to the end of the list (newest at bottom)
+        state.activities.push(newActivity);
       })
 
       // Create post
       .addCase(createPost.fulfilled, (state, action) => {
-        // Add the new post to the top of the list
-        state.activities.unshift(action.payload);
+        // Add the new post to the end of the list (newest at bottom)
+        state.activities.push(action.payload);
       })
 
       // Update comment
