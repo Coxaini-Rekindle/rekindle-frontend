@@ -66,6 +66,7 @@ function UserAvatar({
   const avatarColor = isSelected
     ? colors[colorIndex! % colors.length]
     : "default";
+
   return (
     <div className="flex flex-col items-center gap-2 relative">
       <div
