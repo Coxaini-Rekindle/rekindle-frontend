@@ -8,6 +8,7 @@ import { MdAdd, MdSearch, MdArrowBack } from "react-icons/md";
 
 import MemoryCard from "./components/MemoryCard";
 import CreateMemoryModal from "./components/CreateMemoryModal";
+import { UserFilterBar } from "./components";
 
 import { SearchResults } from "@/pages/search";
 import { useMemories } from "@/hooks/useMemories";
@@ -20,6 +21,7 @@ export default function Memories() {
   const { groupId } = useParams<{ groupId: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
 
   // Get search results
   const {
@@ -53,14 +55,16 @@ export default function Memories() {
     }
   }, [groupId, fetchMemories]);
 
-  // Handle search when query changes
+  // Handle search when query changes or when user filter changes
   useEffect(() => {
-    if (searchQuery.trim() && groupId) {
+    if ((searchQuery.trim() || selectedUserIds.length > 0) && groupId) {
       // Debounce search to avoid too many API calls
       const searchTimeout = setTimeout(() => {
         searchMemories({
           groupId,
           searchTerm: searchQuery.trim(),
+          participants:
+            selectedUserIds.length > 0 ? selectedUserIds : undefined,
           limit: 20,
           offset: 0,
         });
@@ -70,19 +74,31 @@ export default function Memories() {
     } else {
       clearSearch();
     }
-  }, [searchQuery, groupId, searchMemories, clearSearch]);
+  }, [searchQuery, selectedUserIds, groupId, searchMemories, clearSearch]);
 
-  // Filter memories based on search query
+  // Filter memories based on search query and selected user
   const filteredMemories = memories.filter((memory) => {
-    if (!searchQuery) return true;
+    // Apply search filter
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch =
+        memory.description?.toLowerCase().includes(searchLower) ||
+        memory.title?.toLowerCase().includes(searchLower) ||
+        memory.mainPost?.content?.toLowerCase().includes(searchLower);
 
-    const searchLower = searchQuery.toLowerCase();
+      if (!matchesSearch) return false;
+    }
 
-    return (
-      memory.description?.toLowerCase().includes(searchLower) ||
-      memory.title?.toLowerCase().includes(searchLower) ||
-      memory.mainPost?.content?.toLowerCase().includes(searchLower)
-    );
+    // Apply user filter
+    if (selectedUserIds.length > 0) {
+      // Check if any of the selected users appear in this memory
+      // This would need to be implemented based on your memory structure
+      // For now, we'll assume memories have a participants array or similar
+      // You may need to adjust this based on your actual data structure
+      return true; // Placeholder - implement based on your memory structure
+    }
+
+    return true;
   });
 
   const handleLoadMore = () => {
@@ -195,6 +211,14 @@ export default function Memories() {
       >
         {t("memories.createMemory")}
       </Button>
+      {/* User Filter Bar */}
+      {groupId && (
+        <UserFilterBar
+          groupId={groupId}
+          selectedUserIds={selectedUserIds}
+          onUserFilter={setSelectedUserIds}
+        />
+      )}
       {/* Stats */}
       {groupId && (
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -231,7 +255,7 @@ export default function Memories() {
         </div>
       )}{" "}
       {/* Memory Feed or Search Results */}
-      {searchQuery.trim() ? (
+      {searchQuery.trim() || selectedUserIds.length > 0 ? (
         <SearchResults
           error={searchError}
           groupId={groupId || ""}
@@ -263,16 +287,16 @@ export default function Memories() {
       ) : (
         <div className="py-12 text-center">
           <div className="mb-2 text-lg text-foreground-400">
-            {searchQuery
+            {searchQuery || selectedUserIds.length > 0
               ? t("memories.noSearchResults")
               : t("memories.noMemories.title")}
           </div>
           <p className="mb-6 text-foreground-500">
-            {searchQuery
+            {searchQuery || selectedUserIds.length > 0
               ? t("memories.noMemories.searchSubtitle")
               : t("memories.noMemories.subtitle")}
           </p>
-          {!searchQuery && groupId && (
+          {!searchQuery && selectedUserIds.length === 0 && groupId && (
             <Button
               color="primary"
               startContent={<MdAdd size={20} />}

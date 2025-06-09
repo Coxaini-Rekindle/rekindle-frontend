@@ -8,20 +8,32 @@ export const searchApi = {
   searchMemories: async (
     params: SearchParams,
   ): Promise<SearchMemoryResponse[]> => {
-    const { groupId, searchTerm, limit = 20, offset = 0 } = params;
+    const {
+      groupId,
+      searchTerm,
+      limit = 20,
+      offset = 0,
+      participants,
+    } = params;
+
+    const searchParams = new URLSearchParams();
+
+    searchParams.append("searchTerm", searchTerm);
+    searchParams.append("limit", limit.toString());
+    searchParams.append("offset", offset.toString());
+
+    // Add participants query parameters
+    if (participants && participants.length > 0) {
+      participants.forEach((participantId) => {
+        searchParams.append("participants", participantId);
+      });
+    }
 
     const response = await apiClient.get(
       buildEndpoint(
         API_PREFIXES.MEMORIES,
-        `/groups/${groupId}/search/memories`,
+        `/groups/${groupId}/search/memories?${searchParams.toString()}`,
       ),
-      {
-        params: {
-          searchTerm,
-          limit,
-          offset,
-        },
-      },
     );
 
     return response.data;

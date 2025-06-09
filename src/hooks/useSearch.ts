@@ -9,9 +9,12 @@ export const useSearch = () => {
   );
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-
   const searchMemories = useCallback(async (params: SearchParams) => {
-    if (!params.searchTerm.trim()) {
+    // Search if we have a search term or participants selected
+    if (
+      !params.searchTerm.trim() &&
+      (!params.participants || params.participants.length === 0)
+    ) {
       setSearchResults([]);
 
       return;
@@ -24,8 +27,7 @@ export const useSearch = () => {
       const results = await searchApi.searchMemories(params);
 
       setSearchResults(results);
-    } catch (error) {
-      console.error("Search failed:", error);
+    } catch {
       setSearchError("Failed to search memories. Please try again.");
       setSearchResults([]);
     } finally {
@@ -35,6 +37,7 @@ export const useSearch = () => {
 
   const clearSearch = useCallback(() => {
     setSearchResults([]);
+
     setSearchError(null);
   }, []);
 

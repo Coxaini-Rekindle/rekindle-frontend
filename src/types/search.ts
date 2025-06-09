@@ -19,4 +19,5 @@ export interface SearchParams {
   searchTerm: string;
   limit?: number;
   offset?: number;
+  participants?: string[];
 }

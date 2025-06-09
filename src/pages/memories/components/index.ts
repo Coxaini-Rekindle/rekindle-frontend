@@ -15,3 +15,4 @@ export { default as ActivityHeader } from "./ActivityHeader";
 export { default as ActivityContent } from "./ActivityContent";
 export { default as ActivityImages } from "./ActivityImages";
 export { default as ActivityFooter } from "./ActivityFooter";
+export { default as UserFilterBar } from "./UserFilterBar";

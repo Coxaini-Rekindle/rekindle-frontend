@@ -8,6 +8,7 @@ import type {
   CreateInviteLinkRequest,
   InviteLinkResponse,
 } from "@/types/group";
+import type { RecognizedUser, MergeUsersRequest } from "@/types/user";
 
 import apiClient from "./apiClient";
 import { API_PREFIXES, buildEndpoint } from "./apiConfig";
@@ -81,6 +82,41 @@ export const groupsApi = {
         API_PREFIXES.USER_GROUPS,
         `/groups/${groupId}/members/${userIdToRemove}`,
       ),
+    );
+  },
+  // Get recognized users in group
+  getRecognizedUsers: async (groupId: string): Promise<RecognizedUser[]> => {
+    const response = await apiClient.get(
+      buildEndpoint(API_PREFIXES.MEMORIES, `/groups/${groupId}/users`),
+    );
+
+    return response.data;
+  },
+
+  // Get user face image
+  getUserFaceImage: async (
+    groupId: string,
+    userId: string,
+  ): Promise<Blob> => {
+    const response = await apiClient.get(
+      buildEndpoint(
+        API_PREFIXES.MEMORIES,
+        `/groups/${groupId}/users/${userId}/face-image`,
+      ),
+      { responseType: "blob" },
+    );
+
+    return response.data;
+  },
+
+  // Merge users
+  mergeUsers: async (
+    groupId: string,
+    mergeData: MergeUsersRequest,
+  ): Promise<void> => {
+    await apiClient.post(
+      buildEndpoint(API_PREFIXES.MEMORIES, `/groups/${groupId}/users/merge`),
+      mergeData,
     );
   },
 };

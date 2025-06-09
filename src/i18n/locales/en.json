@@ -309,11 +309,25 @@
       "totalPeople": "Total People",
       "totalLocations": "Total Locations",
       "totalReactions": "Total Reactions"
-    },
-    "noMemories": {
+    },    "noMemories": {
       "title": "No memories found",
       "subtitle": "Start creating memories to see them here",
       "searchSubtitle": "Try adjusting your search terms"
+    },      "userFilter": {
+      "title": "Recognized People",
+      "loading": "Loading people...",
+      "clearFilter": "Clear Selection",
+      "selectedCount": "{{count}} selected",
+      "merge": "Merge",
+      "unknown": "Unknown",
+      "unknownUser": "Unknown User",
+      "mergeModal": {
+        "title": "Merge People",
+        "description": "This person appears to be someone already in your group. Select who they should be merged with:",
+        "selectUser": "Select group member",
+        "selectUserPlaceholder": "Choose a group member to merge with",
+        "merge": "Merge Users"
+      }
     },
     "createModal": {
       "title": "Create New Memory",

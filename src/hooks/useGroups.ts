@@ -4,6 +4,7 @@ import type {
   InviteToGroupRequest,
   CreateInviteLinkRequest,
 } from "@/types/group";
+import type { MergeUsersRequest } from "@/types/user";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
@@ -30,6 +31,8 @@ export const groupsQueryKeys = {
   members: (groupId: string) =>
     [...groupsQueryKeys.detail(groupId), "members"] as const,
   invitations: () => ["invitations"] as const,
+  recognizedUsers: (groupId: string) =>
+    [...groupsQueryKeys.detail(groupId), "recognizedUsers"] as const,
 };
 
 // Get user groups
@@ -315,6 +318,64 @@ export const useJoinGroupWithToken = () => {
     onError: (error) => {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to join group";
+
+      toast.error(errorMessage);
+    },
+  });
+};
+
+// Get recognized users in group
+export const useRecognizedUsers = (groupId: string, enabled = true) => {
+  return useQuery({
+    queryKey: groupsQueryKeys.recognizedUsers(groupId),
+    queryFn: () => groupsApi.getRecognizedUsers(groupId),
+    enabled: enabled && !!groupId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+// Get user face image URL
+export const useUserFaceImageUrl = (
+  groupId: string,
+  userId: string,
+  enabled = true,
+) => {
+  return useQuery({
+    queryKey: ["userFaceImage", groupId, userId],
+    queryFn: async () => {
+      const blob = await groupsApi.getUserFaceImage(groupId, userId);
+
+      return URL.createObjectURL(blob);
+    },
+    enabled: enabled && !!groupId && !!userId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Merge users mutation
+export const useMergeUsers = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      groupId,
+      mergeData,
+    }: {
+      groupId: string;
+      mergeData: MergeUsersRequest;
+    }) => groupsApi.mergeUsers(groupId, mergeData),
+    onSuccess: (_, { groupId }) => {
+      queryClient.invalidateQueries({
+        queryKey: groupsQueryKeys.recognizedUsers(groupId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: groupsQueryKeys.members(groupId),
+      });
+      toast.success("Users merged successfully!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to merge users";
 
       toast.error(errorMessage);
     },
